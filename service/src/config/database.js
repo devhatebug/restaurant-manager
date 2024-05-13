@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 const connection = new Sequelize(
-  'menu', 
+  'menu', // name database
   process.env.DB_USER, 
   process.env.DB_PASSWORD,
   {
