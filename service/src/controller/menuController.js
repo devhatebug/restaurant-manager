@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise')
-const Menu = require('../config/database');
+const {Menu} = require('../config/database');
 const {getData, getDataById, addData, updateData, deleteData} = require('../utils/crud');
 
 // hien thi data menu

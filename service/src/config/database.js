@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 const connection = new Sequelize(
-  'menu', // name database
+  'restaurantmanager', // name database
   process.env.DB_USER, 
   process.env.DB_PASSWORD,
   {
@@ -27,4 +27,16 @@ const Menu = connection.define('menu', {
   price: {type:DataTypes.INTEGER, allowNull:false},
 },{tableName: 'menu', timestamps: false})
 
-module.exports = Menu;
+const Users = connection.define('users', {
+  id: {type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
+  codeUser: {type: DataTypes.STRING, allowNull: false},
+  nameUser : {type:DataTypes.STRING, allowNull: false},
+  avtUser : {type:DataTypes.BLOB},
+  username: {type: DataTypes.STRING, allowNull:false},
+  pass : {type:DataTypes.STRING, allowNull:false},
+  address : {type:DataTypes.STRING, allowNull:false},
+  phone : {type:DataTypes.STRING, allowNull:false},
+  roleUser: {type: DataTypes.STRING, allowNull:false},
+},{tableName: 'users', timestamps: false})
+
+module.exports = {Menu, Users};

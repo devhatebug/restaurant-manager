@@ -1,11 +1,14 @@
 const express = require('express')
 const app = express()
 const apiMenu = require('./router/menuApi');
+const apiUsers = require('./router/usersApi');
 const configReqBody = require('./config/reqBody');
 require('dotenv').config();
 const port = process.env.PORT || 8081;
 configReqBody(app);
-app.use('/', apiMenu);
+app.use('/api-menu', apiMenu);
+app.use('/api-menu', u)
+app.use('/api-users', apiUsers)
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
