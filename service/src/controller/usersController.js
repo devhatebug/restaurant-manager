@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise')
-const {Users} = require('../config/database');
+const Users = require('../models/userModel');
 const {getData, getDataById, addData, updateData, deleteData} = require('../utils/crud');
 
 const getAllUsers = (req, res) => {
