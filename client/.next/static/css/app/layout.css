@@ -717,6 +717,9 @@ video {
 .pr-2 {
   padding-right: 0.5rem;
 }
+.pl-\[10px\] {
+  padding-left: 10px;
+}
 .text-center {
   text-align: center;
 }
@@ -802,7 +805,7 @@ video {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: rgb(254, 255, 240);
+  background-color: rgb(255, 255, 255);
 }
 
 .placeholder\:text-gray-400::placeholder {

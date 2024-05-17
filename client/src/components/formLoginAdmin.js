@@ -1,8 +1,41 @@
-import React from "react";
-import clsx from "clsx";
+"use client"
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const FormLoginAdmin = () => {
-    return (
+  const [username, setUserName] = useState("");
+  const [password, setPassWord] = useState('');
+
+  const getUserName = (e) => {
+    setUserName(e.target.value);
+    console.log(username)
+  }
+  const getPassWord = (e) => {
+    setPassWord(e.target.value);
+    console.log(password)
+  }
+
+  const handleLogin = () => {
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:8080/api/auth/login",
+      data: {
+        username: username,
+        password: password,
+      },
+      headers: {},
+      })
+      .then(function (response) {
+        const {token} = response.data;
+        localStorage.setItem('token', token);
+        console.log(response);
+      })
+      .catch(function (err) {
+        console.log(err);
+    });
+  }
+  return (
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -16,7 +49,7 @@ const FormLoginAdmin = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <div className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                 Username
@@ -27,8 +60,9 @@ const FormLoginAdmin = () => {
                   name="username"
                   type="username"
                   autoComplete="username"
+                  onChange={getUserName}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="pl-[10px] block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -50,8 +84,9 @@ const FormLoginAdmin = () => {
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  onChange={getPassWord}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="pl-[10px] block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -59,12 +94,13 @@ const FormLoginAdmin = () => {
             <div>
               <button
                 type="submit"
+                onClick={handleLogin}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     )
