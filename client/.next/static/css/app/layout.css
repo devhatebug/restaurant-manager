@@ -714,11 +714,11 @@ video {
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
-.pr-2 {
-  padding-right: 0.5rem;
-}
 .pl-\[10px\] {
   padding-left: 10px;
+}
+.pr-2 {
+  padding-right: 0.5rem;
 }
 .text-center {
   text-align: center;

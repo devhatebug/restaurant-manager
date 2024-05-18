@@ -1,9 +1,10 @@
 "use client"
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormLoginAdmin = () => {
+  const router = useRouter();
   const [username, setUserName] = useState("");
   const [password, setPassWord] = useState('');
 
@@ -30,6 +31,7 @@ const FormLoginAdmin = () => {
         const {token} = response.data;
         localStorage.setItem('token', token);
         console.log(response);
+        router.push('/admin');
       })
       .catch(function (err) {
         console.log(err);

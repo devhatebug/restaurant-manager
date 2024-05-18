@@ -1,14 +1,22 @@
-import React from "react";
-import clsx from "clsx";
+'use client';
+import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
 import style from './admin.module.css';
-import FormLoginAdmin from "@/components/formLoginAdmin"
+import { useRouter } from 'next/navigation';
 
-const adminPage = () => {
+const AdminPage = () => {
+    const router = useRouter();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if(!token) {
+            router.push('/admin/login')
+        }
+    }, [router])
     return (
         <div className={clsx(style.adminPage)}>
-            <FormLoginAdmin />
+            <h1>Admin Page</h1>
         </div>
-    )
-}
+    );
+};
 
-export default adminPage;
+export default AdminPage;
