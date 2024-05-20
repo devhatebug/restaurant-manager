@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import style from './admin.module.css';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const AdminPage = () => {
     const router = useRouter();
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         if(!token) {
             router.push('/admin/login')
         }

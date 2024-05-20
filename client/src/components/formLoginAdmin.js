@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const FormLoginAdmin = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const FormLoginAdmin = () => {
       })
       .then(function (response) {
         const {token} = response.data;
-        localStorage.setItem('token', token);
+        Cookies.set('token', token);
         console.log(response);
         router.push('/admin');
       })
