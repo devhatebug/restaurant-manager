@@ -18,6 +18,11 @@ const logIn = async(req, res) => {
             return res.status(400).send({message: 'Tài khoản hoặc mật khẩu không chính xác'});
         }
 
+        const role = await Users.findOne({where: {roleUser: 'admin'}});
+        if(!role) {
+            return res.status(400).send({message: 'Tài khoản hoặc mật khẩu không chính xác'});
+        }
+
         const token = createToken(Users);
         res.status(200).send({token});
     }

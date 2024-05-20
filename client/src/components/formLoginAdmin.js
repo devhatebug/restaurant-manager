@@ -8,38 +8,42 @@ const FormLoginAdmin = () => {
   const router = useRouter();
   const [username, setUserName] = useState("");
   const [password, setPassWord] = useState('');
+  const [notiErr, setNotiErr] = useState();
+  const [messageErr, setMessageErr] = useState('')
 
   const getUserName = (e) => {
     setUserName(e.target.value);
-    console.log(username)
+    setNotiErr(false);
   }
   const getPassWord = (e) => {
     setPassWord(e.target.value);
-    console.log(password)
+    setNotiErr(false);
   }
 
-  const handleLogin = () => {
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:8080/api/auth/login",
-      data: {
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8080/api/auth/login', {
         username: username,
         password: password,
-      },
-      headers: {},
-      })
-      .then(function (response) {
-        const {token} = response.data;
-        Cookies.set('token', token);
-        console.log(response);
-        router.push('/admin');
-      })
-      .catch(function (err) {
-        console.log(err);
-    });
-  }
+      });
+
+      const { token } = response.data;
+      Cookies.set('token', token);
+      router.push('/admin');
+    } catch (error) {
+        setMessageErr(error.response.data.message)
+        setNotiErr(true);
+    }
+  };
   return (
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <>
+      {notiErr && 
+        <div className="animate-slideInRight absolute bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 top-0 right-0" role="alert">
+          <p className="font-bold">Error</p>
+          <p>{messageErr}</p>
+        </div>
+      }
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
@@ -106,6 +110,8 @@ const FormLoginAdmin = () => {
           </div>
         </div>
       </div>
+    </>
+      
     )
 }
 
