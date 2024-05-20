@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import style from './admin.module.css';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import SiderBarAdminPage from '@/components/siderbarAdminPage';
 
 const AdminPage = () => {
     const router = useRouter();
@@ -15,7 +16,10 @@ const AdminPage = () => {
     }, [router])
     return (
         <div className={clsx(style.adminPage)}>
-            <h1>Admin Page</h1>
+            <div className={clsx(style.siderBar)}>
+                <SiderBarAdminPage />
+            </div>
+            <div className={clsx(style.mainContainer)}></div>
         </div>
     );
 };
