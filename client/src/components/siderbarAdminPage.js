@@ -1,7 +1,15 @@
 'use client'
 import React, {useState} from "react"
+import { usePathname } from "next/navigation";
 
 const SiderBarAdminPage = () => {
+    const pathname = usePathname();
+    if(pathname === '/admin/login') {
+        return (
+            <p></p>
+        )
+    }
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isFollow, setIsFollow] = useState(true);
 

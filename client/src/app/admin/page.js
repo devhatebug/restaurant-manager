@@ -16,10 +16,7 @@ const AdminPage = () => {
     }, [router])
     return (
         <div className={clsx(style.adminPage)}>
-            <div className={clsx(style.siderBar)}>
-                <SiderBarAdminPage />
-            </div>
-            <div className={clsx(style.mainContainer)}></div>
+            <div className="text-black"></div>
         </div>
     );
 };
