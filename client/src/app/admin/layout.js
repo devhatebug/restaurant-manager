@@ -13,9 +13,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex justify-center items-center">
+        <div className="flex sm:justify-center justify-start flex-wrap items-center">
             <SiderBarAdminPage />
-            <div className="container ml-0 sm:ml-[270px] ">
+            <div className="container">
                 {children}
             </div>
         </div>
