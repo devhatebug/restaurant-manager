@@ -16,7 +16,7 @@ const AdminPage = () => {
     }, [router])
     return (
         <div className={clsx(style.adminPage)}>
-            <div className="text-black"></div>
+            <div className="text-black">teteet</div>
         </div>
     );
 };

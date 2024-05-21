@@ -634,9 +634,6 @@ video {
 .z-40 {
   z-index: 40;
 }
-.m-0 {
-  margin: 0px;
-}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -661,6 +658,21 @@ video {
 }
 .mt-2 {
   margin-top: 0.5rem;
+}
+.ml-\[256px\] {
+  margin-left: 256px;
+}
+.ml-\[260px\] {
+  margin-left: 260px;
+}
+.ml-\[270px\] {
+  margin-left: 270px;
+}
+.ml-0 {
+  margin-left: 0px;
+}
+.mt-\[100px\] {
+  margin-top: 100px;
 }
 .block {
   display: block;
@@ -916,6 +928,10 @@ video {
 .tracking-tight {
   letter-spacing: -0.025em;
 }
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
 .text-gray-300 {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity));
@@ -947,10 +963,6 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -1081,6 +1093,14 @@ body {
   .sm\:mx-auto {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .sm\:ml-0 {
+    margin-left: 0px;
+  }
+
+  .sm\:ml-\[270px\] {
+    margin-left: 270px;
   }
 
   .sm\:hidden {
