@@ -16,7 +16,7 @@ const AdminPage = () => {
     }, [router])
     return (
         <div className={clsx(style.adminPage)}>
-            <div className="text-black">teteet</div>
+            <img src="https://i.gifer.com/Al3B.gif" alt="" />
         </div>
     );
 };
