@@ -1,8 +1,10 @@
 const mysql = require('mysql2/promise')
 const Users = require('../models/userModel');
-const {getData, getDataById, addData, updateData, deleteData} = require('../utils/crud');
+const {getData, getDataById, getDataLimit, addData, updateData, deleteData} = require('../utils/crud');
 
 const getAllUsers = (req, res) => {
+    const {offset, limit} = req.query;
+    getDataLimit(req, res, Users, limit, offset);
     getData(req, res, Users)
 }
 

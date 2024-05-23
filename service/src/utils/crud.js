@@ -24,6 +24,16 @@ const getDataById = async (req, res, nameData, idSelect) => {
     }
 }
 
+const getDataLimit = async(req, res, nameData, limit, offset) => {
+    const dataSelector = await nameData.findAll(
+        {
+            offset: parseInt(offset), 
+            limit: parseInt(limit)
+        }
+    )
+    res.send(dataSelector)
+}
+
 const addData = async(req, res, nameData, newData) => {
     try {
         await nameData.create(newData);
@@ -64,4 +74,4 @@ const deleteData = async(req, res, nameData, idDelete) => {
     }
 }
 
-module.exports = {getData, getDataById, addData, updateData, deleteData}
+module.exports = {getData, getDataById, getDataLimit, addData, updateData, deleteData}
