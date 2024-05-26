@@ -1,8 +1,6 @@
 'use client'
 import React from "react";
 import TableUsers from "@/components/tableUsers";
-import Pagination from "@/components/pagination";
-import axios from "axios";
 const Users = () => {
 
     return(
@@ -33,9 +31,6 @@ const Users = () => {
             </div>
             <div className="table-users mb-[30px]">
                 <TableUsers />
-            </div>
-            <div className="pagination">
-                <Pagination />
             </div>
        </div>
     )

@@ -3,14 +3,17 @@ const Users = require('../models/userModel');
 const {getData, getDataById, getDataLimit, addData, updateData, deleteData} = require('../utils/crud');
 
 const getAllUsers = (req, res) => {
-    const {offset, limit} = req.query;
-    getDataLimit(req, res, Users, limit, offset);
     getData(req, res, Users)
 }
 
 const getUserById = (req, res) => {
     const idUser = req.params.idUser;
     getDataById(req,res,Users,idUser);
+}
+
+const getUserLimit = (req, res) => {
+    const {offset, limit} = req.query;
+    getDataLimit(req, res, Users, limit, offset);
 }
 
 const addUser = (req, res) => {
@@ -48,4 +51,4 @@ const deleteUser = (req, res) => {
     deleteData(req, res, Users, idUser);
 }
 
-module.exports = {getAllUsers, getUserById, addUser, editUser, deleteUser}
+module.exports = {getAllUsers, getUserById,getUserLimit, addUser, editUser, deleteUser}
