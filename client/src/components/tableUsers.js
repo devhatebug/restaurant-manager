@@ -7,7 +7,7 @@ const TableUsers = (props) => {
     const [dataUsers, setDataUsers] = useState([]); 
     const [currentPage, setCurrentPage] = useState(1);
     const [lengthPagination, setLengthPagination] = useState(0);
-    const limit = 1;
+    const limit = 10;
     const offset = (currentPage - 1) * limit;
 
     const getUsers = async () => {
