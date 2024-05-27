@@ -2,9 +2,41 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const FormEditUser = ({onClose, dataUser}) => {
+const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleErr }) => {
     if (!dataUser || dataUser.length === 0) return null;
     const data = dataUser[0];
+    const [dataName, setDataName] = useState('');
+    const [dataRole, setDataRole] = useState('');
+    const [dataUserName, setDataUserName] = useState('');
+    const [dataPass, setDataPass] = useState('');
+    const [dataAddress, setDataAddress] = useState('');
+    const [dataPhone, setDataPhone] = useState('');
+    const [dataImg, setDataImg] = useState(null);
+    const [dataCodeUser, setDataCodeUser] = useState('abc');
+    const formData = {
+        codeUser: dataCodeUser,
+        name: dataName === "" ? data.nameUser : dataName,
+        avt: dataImg === null ? data.avtUser : dataImg,
+        username: dataUserName === "" ? data.username : dataUserName,
+        pass: dataPass === "" ? data.pass : dataPass,
+        address: dataAddress === "" ? data.address : dataAddress,
+        phone: dataPhone === "" ? data.phone : dataPhone,
+        role: dataRole === "" ? data.roleUser : dataRole,
+        idUser: data.id,
+    };
+
+    const handleUpdateUser = async () => {
+        try {
+            const res = await axios.put('http://127.0.0.1:8080/api-users/update-user', formData);
+            handleCheckData(1)
+            handleUpdate(true);
+            onClose()
+        } catch (err) {
+            handleErr(true)
+            console.log(err);
+        }
+    };
+        
     return(
     <div>
         <div className="flex items-center py-6">
@@ -13,17 +45,17 @@ const FormEditUser = ({onClose, dataUser}) => {
             </div>
             <label className="cursor-pointer ">
                 <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">Browse</span>
-                <input type="file" className="hidden"/>
+                <input onChange={(e) => setDataImg(e.target.files[0])} type="file" className="hidden"/>
             </label>
         </div>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
             <div>
                 <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Name User</label>
-                <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.nameUser} required />
+                <input onChange={(e) => setDataName(e.target.value)} type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.nameUser} required />
             </div>
             <div>
                 <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-900">Role</label>
-                <select defaultValue={data.roleUser} id="role" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <select onChange={(e) => setDataRole(e.target.value)} value={dataRole} id="role" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     <option value={`${data.roleUser === 'người dùng' ? "user" : "admin"}`}>{data.roleUser}</option>
                     {data.roleUser === "admin" ?
                         <option value="user">user</option> :
@@ -33,22 +65,22 @@ const FormEditUser = ({onClose, dataUser}) => {
             </div>
             <div>
                 <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">Username</label>
-                <input type="text" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.username} required />
+                <input onChange={(e) => setDataUserName(e.target.value)} type="text" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.username} required />
             </div>
             <div>
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.pass} required />
+                <input onChange={(e) => setDataPass(e.target.value)} type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.pass} required />
             </div>
             <div>
                 <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">Address</label>
-                <input type="text" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.address} required />
+                <input onChange={(e) => setDataAddress(e.target.value)} type="text" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.address} required />
             </div>  
             <div>
                 <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900">Phone number</label>
-                <input type="tel" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.phone} pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required />
+                <input onChange={(e) => setDataPhone(e.target.value)} type="tel" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={data.phone} pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required />
             </div>
         </div>
-        <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mr-[10px] mb-[10px]">Submit</button>
+        <button onClick={handleUpdateUser} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mr-[10px] mb-[10px]">Submit</button>
         <button onClick={onClose} className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</button>
     </div>
 

@@ -18,6 +18,10 @@ module.exports = {
           '50%' : {transform: 'translateX(50%)', opacity: '0.5'},
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
+        slideInBottom: {
+          '0%': { transform: 'translateY(50%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
         openingPopup: {
           '0%': { opacity: '0', transform: 'scale(0.5)' },
           '50%': { opacity: '0.5', transform: 'scale(0.75)' },
@@ -26,6 +30,7 @@ module.exports = {
       },
       animation: {
         slideInRight: 'slideInRight 0.5s linear',
+        slideInBottom: 'slideInBottom 0.3s linear',
         openingPopup: 'openingPopup 0.2s linear forwards',
       },
     },

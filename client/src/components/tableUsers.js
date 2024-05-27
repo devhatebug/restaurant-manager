@@ -10,13 +10,16 @@ const TableUsers = (props) => {
     const [dataUsers, setDataUsers] = useState([]); 
     const [currentPage, setCurrentPage] = useState(1);
     const [lengthPagination, setLengthPagination] = useState(0);
-    const limit = 2;
+    const limit = 10;
     const offset = (currentPage - 1) * limit;
-
+    const [checkData, setCheckData] = useState(0);
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [isErr, setIsErr] = useState(true);
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
             setDataUsers(res.data);
+            setCheckData(0);
         } catch (err) {
             console.log(err);
         }
@@ -57,7 +60,7 @@ const TableUsers = (props) => {
 
     useEffect(() => {
         getUsers();
-    }, [currentPage]);
+    }, [currentPage, limit, checkData]);
 
     useEffect(() => {
         getAllUsers();
@@ -116,7 +119,29 @@ const TableUsers = (props) => {
         {isOpenFormEdit && 
         <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px] px-[10px]">
             <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg px-[20px] py-[20px]">
-                <FormEditUser onClose={closeForm} dataUser={userSelector} />
+                <FormEditUser onClose={closeForm} dataUser={userSelector} handleUpdate={setIsUpdate} handleCheckData={setCheckData} handleErr={setIsErr} />
+            </div>
+        </div>
+        }
+        {isUpdate && 
+        <div onClick={() => setIsUpdate(false)} className="cursor-pointer animate-slideInBottom bg-teal-100 border-t-4 border-teal-500 rounded-lg text-teal-900 px-4 py-3 shadow-md absolute right-0 bottom-0" role="alert">
+            <div className="flex">
+                <div className="py-1"><svg className="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+                <div>
+                    <p className="font-bold">Thành công</p>
+                    <p className="text-sm">Chỉnh sửa thành công người dùng</p>
+                </div>
+            </div>
+        </div>
+        }
+        {isErr && 
+        <div onClick={() => setIsErr(false)} className="cursor-pointer animate-slideInBottom bg-red-500 border-t-4 border-red-900 rounded-lg text-white px-4 py-3 shadow-md absolute right-0 bottom-0" role="alert">
+            <div className="flex">
+                <div className="py-1"><svg className="fill-current h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+                <div>
+                    <p className="font-bold">Lỗi</p>
+                    <p className="text-sm">Hãy thử lại lần nữa. Xin cảm ơn</p>
+                </div>
             </div>
         </div>
         }
