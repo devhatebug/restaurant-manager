@@ -34,7 +34,7 @@ const Pagination = ({ currentPage, setCurrentPage, lengthPagination }) => {
                         <button 
                             onClick={checkCurrentPage}
                             value={dt}
-                            className={`flex items-center justify-center px-3 h-8 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === dt ? "bg-slate-600 text-white" : ""}`}>
+                            className={`flex items-center justify-center px-3 h-8 leading-tight text-black border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === dt ? "bg-slate-600 text-white" : ""}`}>
                                 {dt}
                         </button>
                     </li>

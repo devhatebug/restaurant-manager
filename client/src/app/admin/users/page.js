@@ -78,7 +78,7 @@ const Users = () => {
 
         {isCard && 
             <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px]">
-                <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
                     <button onClick={closeCard} id="dropdownButton" data-dropdown-toggle="dropdown" className="inline-block text-gray-500  hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm p-1.5" type="button">
                         <svg className="w-[30px] h-[30px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -90,7 +90,7 @@ const Users = () => {
                             </svg>
                     </button>
                     {userSearched != null ? 
-                    <div className="flex flex-col items-center pb-10 z-10">
+                    <div className="animate-openingPopup flex flex-col items-center pb-10 z-10">
                         <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src="" alt="User Avatar"/>
                         <h5 className="mb-1 text-xl font-semibold text-gray-900 uppercase">{userSearched.nameUser}</h5>
                         <span className="text-sm text-gray-500"><strong>Code user: </strong>{userSearched.codeUser}</span>

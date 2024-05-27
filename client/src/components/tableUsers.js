@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "@/components/pagination";
-
+import FormEditUser from "./formEditUser";
 const TableUsers = (props) => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
+    const [isOpenFormEdit, setIsOpenFormEdit] = useState(false);
+    const [idUser, setIdUser] = useState(0);
+    const [userSelector, setUserSelector] = useState([]);
     const [dataUsers, setDataUsers] = useState([]); 
     const [currentPage, setCurrentPage] = useState(1);
     const [lengthPagination, setLengthPagination] = useState(0);
-    const limit = 10;
+    const limit = 2;
     const offset = (currentPage - 1) * limit;
 
     const getUsers = async () => {
@@ -28,6 +31,29 @@ const TableUsers = (props) => {
             console.log(err);
         }
     };
+
+    const handleUpdateUser = (e) => {
+        setIdUser(e.target.value)
+        setIsOpenFormEdit(true);
+    };
+
+    const getUserById = async() => {
+        try {
+            const res = await axios.get(`${URL_API}s/${idUser}`)
+            setUserSelector(res.data);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    };
+
+    const closeForm = () => {
+        setIsOpenFormEdit(false);
+    }
+
+    useEffect(() => {
+        getUserById();
+    },[idUser])
 
     useEffect(() => {
         getUsers();
@@ -51,58 +77,28 @@ const TableUsers = (props) => {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
                     <tr>
-                        <th scope="col" className="px-6 py-3">
-                            mã user
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            tên gọi
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            địa chỉ
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            điện thoại
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            vai trò
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            tên đăng nhập
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            mật khẩu
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Action
-                        </th>
+                        <th scope="col" className="px-6 py-3">mã user</th>
+                        <th scope="col" className="px-6 py-3">tên gọi</th>
+                        <th scope="col" className="px-6 py-3">địa chỉ</th>
+                        <th scope="col" className="px-6 py-3">điện thoại</th>
+                        <th scope="col" className="px-6 py-3">vai trò</th>
+                        <th scope="col" className="px-6 py-3">tên đăng nhập</th>
+                        <th scope="col" className="px-6 py-3">mật khẩu</th>
+                        <th scope="col" className="px-6 py-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {(dataUsers.map((user) => (
                         <tr key={user.id} className="bg-white border-b hover:bg-gray-50">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                {user.codeUser}
-                            </th>
-                            <td className="px-6 py-4">
-                                {user.nameUser}
-                            </td>
-                            <td className="px-6 py-4">
-                                {user.address}
-                            </td>
-                            <td className="px-6 py-4">
-                                {user.phone}
-                            </td>
-                            <td className="px-6 py-4">
-                                {user.roleUser}
-                            </td>
-                            <td className="px-6 py-4">
-                                {user.username}
-                            </td>
-                            <td className="px-6 py-4">
-                                {user.pass}
-                            </td>
+                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{user.codeUser}</th>
+                            <td className="px-6 py-4">{user.nameUser}</td>
+                            <td className="px-6 py-4">{user.address}</td>
+                            <td className="px-6 py-4">{user.phone}</td>
+                            <td className="px-6 py-4">{user.roleUser}</td>
+                            <td className="px-6 py-4">{user.username}</td>
+                            <td className="px-6 py-4">{user.pass}</td>
                             <td className="flex items-center px-6 py-4">
-                                <button className="font-medium text-blue-600 hover:underline">Edit</button>
+                                <button value={user.id} onClick={handleUpdateUser} className="font-medium text-blue-600 hover:underline">Edit</button>
                                 <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
                             </td>
                         </tr>
@@ -117,6 +113,13 @@ const TableUsers = (props) => {
                 lengthPagination={lengthPagination}
             />
         </div>
+        {isOpenFormEdit && 
+        <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px] px-[10px]">
+            <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg px-[20px] py-[20px]">
+                <FormEditUser onClose={closeForm} dataUser={userSelector} />
+            </div>
+        </div>
+        }
         </>
     )
 }

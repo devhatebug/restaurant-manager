@@ -18,9 +18,15 @@ module.exports = {
           '50%' : {transform: 'translateX(50%)', opacity: '0.5'},
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
+        openingPopup: {
+          '0%': { opacity: '0', transform: 'scale(0.5)' },
+          '50%': { opacity: '0.5', transform: 'scale(0.75)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
       },
       animation: {
         slideInRight: 'slideInRight 0.5s linear',
+        openingPopup: 'openingPopup 0.2s linear forwards',
       },
     },
   },
