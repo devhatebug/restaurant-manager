@@ -1,8 +1,9 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { fileToBase64, blobtoBase64 } from "@/utils/toBase64";
 
-const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleErr }) => {
+const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleErr, userUpdate }) => {
     if (!dataUser || dataUser.length === 0) return null;
     const data = dataUser[0];
     const [dataName, setDataName] = useState('');
@@ -12,11 +13,13 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
     const [dataAddress, setDataAddress] = useState('');
     const [dataPhone, setDataPhone] = useState('');
     const [dataImg, setDataImg] = useState(null);
+    const [base64Img, setBase64Img] = useState();
     const [dataCodeUser, setDataCodeUser] = useState('abc');
+    const [urlImg, setUrlImg] = useState();
     const formData = {
         codeUser: dataCodeUser,
         name: dataName === "" ? data.nameUser : dataName,
-        avt: dataImg === null ? data.avtUser : dataImg,
+        avt: base64Img === null ? data.avtUser : base64Img,
         username: dataUserName === "" ? data.username : dataUserName,
         pass: dataPass === "" ? data.pass : dataPass,
         address: dataAddress === "" ? data.address : dataAddress,
@@ -29,6 +32,7 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
         try {
             const res = await axios.put('http://127.0.0.1:8080/api-users/update-user', formData);
             handleCheckData(1)
+            userUpdate(1);
             handleUpdate(true);
             onClose()
         } catch (err) {
@@ -36,16 +40,25 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
             console.log(err);
         }
     };
-        
+
+    if(dataImg) { 
+        fileToBase64(dataImg, setUrlImg)
+    }
+
+    const handleUploadFile = async(e) => {
+        fileToBase64(e.target.files[0], setBase64Img)
+        setDataImg(e.target.files[0])
+    }
+
     return(
     <div>
         <div className="flex items-center py-6">
             <div className="w-12 h-12 mr-4 flex-none rounded-xl border overflow-hidden">
-                <img className="w-12 h-12 mr-4 object-cover" src="https://images.unsplash.com/photo-1611867967135-0faab97d1530?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1352&amp;q=80" alt="Avatar Upload"/>
+                <img className="w-12 h-12 mr-4 object-cover" src={urlImg == null ? blobtoBase64(data.avtUser) : urlImg} alt="Avatar Upload"/>
             </div>
             <label className="cursor-pointer ">
                 <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">Browse</span>
-                <input onChange={(e) => setDataImg(e.target.files[0])} type="file" className="hidden"/>
+                <input onChange={handleUploadFile} type="file" className="hidden"/>
             </label>
         </div>
         <div className="grid gap-6 mb-6 md:grid-cols-2">

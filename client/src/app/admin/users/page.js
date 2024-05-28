@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import TableUsers from "@/components/tableUsers";
 import axios from "axios";
+import { blobtoBase64 } from "@/utils/toBase64";
 const Users = () => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
     const [dataUsers, setDataUsers] = useState([]);
@@ -9,10 +10,12 @@ const Users = () => {
     const [userSearched, setUserSearched] = useState(null);
     const [isCard, setIsCard] = useState(false);
     const [isAlertSearch, setIsAlertSearch] = useState(false);
-
+    const [dataFileImg, setDataFileImg] = useState();
+    const [isChangeData, setIsChangeData] = useState(0);
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}s`);
+            setIsChangeData(0);
             setDataUsers(res.data);
         } catch (err) {
             console.log(err);
@@ -21,7 +24,7 @@ const Users = () => {
 
     useEffect(() => {
         getUsers();
-    }, []);
+    }, [isChangeData]);
 
     const getValueSearch = (e) => {
         setDataSearch(e.target.value);
@@ -73,7 +76,7 @@ const Users = () => {
                 </div>
             </div>
             <div className="table-users mb-[30px]">
-                <TableUsers />
+                <TableUsers handleChangeData={setIsChangeData} />
             </div>
 
         {isCard && 
@@ -91,7 +94,7 @@ const Users = () => {
                     </button>
                     {userSearched != null ? 
                     <div className="animate-openingPopup flex flex-col items-center pb-10 z-10">
-                        <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src="" alt="User Avatar"/>
+                        <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src={blobtoBase64(userSearched.avtUser)} alt="User Avatar"/>
                         <h5 className="mb-1 text-xl font-semibold text-gray-900 uppercase">{userSearched.nameUser}</h5>
                         <span className="text-sm text-gray-500"><strong>Code user: </strong>{userSearched.codeUser}</span>
                         <span className="text-sm text-gray-500"><strong>Username: </strong>{userSearched.username}</span>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "@/components/pagination";
 import FormEditUser from "./formEditUser";
-const TableUsers = (props) => {
+const TableUsers = ({handleChangeData}) => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
     const [isOpenFormEdit, setIsOpenFormEdit] = useState(false);
     const [idUser, setIdUser] = useState(0);
@@ -13,8 +13,9 @@ const TableUsers = (props) => {
     const limit = 10;
     const offset = (currentPage - 1) * limit;
     const [checkData, setCheckData] = useState(0);
+    const [userUpdate, setUserUpdate] = useState(0);
     const [isUpdate, setIsUpdate] = useState(false);
-    const [isErr, setIsErr] = useState(true);
+    const [isErr, setIsErr] = useState(false);
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
@@ -42,13 +43,18 @@ const TableUsers = (props) => {
 
     const getUserById = async() => {
         try {
-            const res = await axios.get(`${URL_API}s/${idUser}`)
+            const res = await axios.get(`${URL_API}s/${idUser}`);
+            setUserUpdate(0);
             setUserSelector(res.data);
         }
         catch(err) {
             console.log(err);
         }
     };
+     useEffect(() => {
+        userUpdate === 0 && handleChangeData(0);
+        userUpdate === 1 && handleChangeData(1);
+    }, [userUpdate])
 
     const closeForm = () => {
         setIsOpenFormEdit(false);
@@ -56,7 +62,7 @@ const TableUsers = (props) => {
 
     useEffect(() => {
         getUserById();
-    },[idUser])
+    },[idUser, userUpdate])
 
     useEffect(() => {
         getUsers();
@@ -119,7 +125,14 @@ const TableUsers = (props) => {
         {isOpenFormEdit && 
         <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px] px-[10px]">
             <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg px-[20px] py-[20px]">
-                <FormEditUser onClose={closeForm} dataUser={userSelector} handleUpdate={setIsUpdate} handleCheckData={setCheckData} handleErr={setIsErr} />
+                <FormEditUser 
+                    onClose={closeForm} 
+                    dataUser={userSelector} 
+                    handleUpdate={setIsUpdate} 
+                    handleCheckData={setCheckData} 
+                    handleErr={setIsErr} 
+                    userUpdate={setUserUpdate} 
+                />
             </div>
         </div>
         }
