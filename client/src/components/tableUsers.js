@@ -16,6 +16,8 @@ const TableUsers = ({handleChangeData}) => {
     const [userUpdate, setUserUpdate] = useState(0);
     const [isUpdate, setIsUpdate] = useState(false);
     const [isErr, setIsErr] = useState(false);
+    const [listUsers, setListUsers] = useState();
+    const [isReload, setIsReload] = useState(0)
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
@@ -30,7 +32,9 @@ const TableUsers = ({handleChangeData}) => {
         try {
             const res = await axios.get(`${URL_API}s`);
             const lengthData = res.data.length;
+            setListUsers(res.data);
             setLengthPagination(Math.ceil(lengthData / limit));
+            setIsReload(0);
         } catch (err) {
             console.log(err);
         }
@@ -70,7 +74,7 @@ const TableUsers = ({handleChangeData}) => {
 
     useEffect(() => {
         getAllUsers();
-    }, []);
+    }, [isReload]);
     return(
         <>
         <button type="button" className="mb-[20px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -132,6 +136,8 @@ const TableUsers = ({handleChangeData}) => {
                     handleCheckData={setCheckData} 
                     handleErr={setIsErr} 
                     userUpdate={setUserUpdate} 
+                    listUsers={listUsers}
+                    setIsReload={setIsReload}
                 />
             </div>
         </div>

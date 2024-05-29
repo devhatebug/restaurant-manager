@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import TableUsers from "@/components/tableUsers";
 import axios from "axios";
 import { blobtoBase64 } from "@/utils/toBase64";
+import FormEditUser from "@/components/formEditUser";
 const Users = () => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
     const [dataUsers, setDataUsers] = useState([]);
@@ -12,6 +13,8 @@ const Users = () => {
     const [isAlertSearch, setIsAlertSearch] = useState(false);
     const [dataFileImg, setDataFileImg] = useState();
     const [isChangeData, setIsChangeData] = useState(0);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isEditFormOpen, setIsEditFormOpen] = useState(false);
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}s`);
@@ -49,6 +52,15 @@ const Users = () => {
         setIsCard(false);
     }
 
+    const handleEditClick = (user) => {
+        setSelectedUser(user);
+        setIsEditFormOpen(true);
+    };
+
+    const handleCloseEditForm = () => {
+        setIsEditFormOpen(false);
+    };
+
     return(
        <div className="users ml-0 sm:ml-[260px] pl-[10px] pr-[10px]">
             <div className="flex items-center justify-between pt-[30px] mb-[50px]">
@@ -80,6 +92,7 @@ const Users = () => {
             </div>
 
         {isCard && 
+        <>
             <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px]">
                 <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
                     <button onClick={closeCard} id="dropdownButton" data-dropdown-toggle="dropdown" className="inline-block text-gray-500  hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm p-1.5" type="button">
@@ -103,7 +116,7 @@ const Users = () => {
                         <span className="text-sm text-gray-500"><strong>Address: </strong>{userSearched.address}</span>
                         <span className="text-sm text-gray-500"><strong>Role: </strong>{userSearched.roleUser}</span>
                         <div className="flex mt-4 md:mt-6">
-                            <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">Edit</button>
+                            <button onClick={() => handleEditClick(userSearched)} className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">Edit</button>
                             <button className="py-2 px-4 ms-2 text-sm font-medium text-white focus:outline-none bg-red-700 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Delete</button>
                         </div>
                     </div> :
@@ -115,6 +128,8 @@ const Users = () => {
                 </div>
                 
             </div>
+            {isEditFormOpen && <FormEditUser user={selectedUser} onClose={handleCloseEditForm} />}
+            </>
             }
             {isAlertSearch && 
                 <div className="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 absolute bottom-0 right-0" role="alert">
@@ -127,7 +142,6 @@ const Users = () => {
                     </div>
                 </div>
             }
-
        </div>
     )
 }
