@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "@/components/pagination";
 import FormEditUser from "./formEditUser";
-const TableUsers = ({handleChangeData}) => {
+const TableUsers = ({handleChangeData, checkData, setCheckData, userUpdate, setUserUpdate, isReload, setIsReload, isUpdate, setIsUpdate, removeUser}) => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
     const [isOpenFormEdit, setIsOpenFormEdit] = useState(false);
     const [idUser, setIdUser] = useState(0);
@@ -12,12 +12,8 @@ const TableUsers = ({handleChangeData}) => {
     const [lengthPagination, setLengthPagination] = useState(0);
     const limit = 10;
     const offset = (currentPage - 1) * limit;
-    const [checkData, setCheckData] = useState(0);
-    const [userUpdate, setUserUpdate] = useState(0);
-    const [isUpdate, setIsUpdate] = useState(false);
     const [isErr, setIsErr] = useState(false);
     const [listUsers, setListUsers] = useState();
-    const [isReload, setIsReload] = useState(0)
     const getUsers = async () => {
         try {
             const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
@@ -112,7 +108,7 @@ const TableUsers = ({handleChangeData}) => {
                             <td className="px-6 py-4">{user.pass}</td>
                             <td className="flex items-center px-6 py-4">
                                 <button value={user.id} onClick={handleUpdateUser} className="font-medium text-blue-600 hover:underline">Edit</button>
-                                <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
+                                <button value={user.id} onClick={removeUser} className="font-medium text-red-600 hover:underline ms-3">Remove</button>
                             </td>
                         </tr>
                     )))}
