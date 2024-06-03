@@ -67,6 +67,7 @@ const deleteData = async(req, res, nameData, idDelete) => {
                 where: {id: idDelete}
             }
         )
+        res.send("Delete Successfully");
     }
     catch(err) {
         console.log(err);
