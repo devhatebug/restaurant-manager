@@ -49,19 +49,19 @@ const Users = () => {
         }
     };
 
-    const removeUser = async(e) => {
-        setIdUserDestroy(e.target.value);
+    const removeUser = async (e) => {
+        const userId = e.target.value;
+        setIdUserDestroy(userId);
         try {
-            await axios.delete(`http://127.0.0.1:8080/api-users/delete-user/${idUserDestroy}`)
+            await axios.delete(`http://127.0.0.1:8080/api-users/delete-user/${userId}`);
             setCheckData(1);
             setIsReload(1);
             setIsChangeData(1);
+            setIsCard(false);
+        } catch (err) {
+            console.log(err);
         }
-        catch(err) {
-            console.log(err)
-        }
-        
-    } 
+    };
 
     useEffect(() => {
         dataSearch != null && setIsAlertSearch(false)

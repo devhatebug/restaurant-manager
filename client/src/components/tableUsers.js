@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "@/components/pagination";
 import FormEditUser from "./formEditUser";
+import FormAddUser from "./formAddUser";
 const TableUsers = ({handleChangeData, checkData, setCheckData, userUpdate, setUserUpdate, isReload, setIsReload, isUpdate, setIsUpdate, removeUser}) => {
     const URL_API = `http://127.0.0.1:8080/api-users/user`;
     const [isOpenFormEdit, setIsOpenFormEdit] = useState(false);
+    const [isOpenFormAdd, setIsOpenFormAdd] = useState(false);
     const [idUser, setIdUser] = useState(0);
     const [userSelector, setUserSelector] = useState([]);
     const [dataUsers, setDataUsers] = useState([]); 
@@ -60,6 +62,14 @@ const TableUsers = ({handleChangeData, checkData, setCheckData, userUpdate, setU
         setIsOpenFormEdit(false);
     }
 
+    const handleOpenFormAdd = () => {
+        setIsOpenFormAdd(true);
+    }
+
+    const closeFormAdd = () => {
+        setIsOpenFormAdd(false)
+    }
+
     useEffect(() => {
         getUserById();
     },[idUser, userUpdate])
@@ -73,7 +83,7 @@ const TableUsers = ({handleChangeData, checkData, setCheckData, userUpdate, setU
     }, [isReload]);
     return(
         <>
-        <button type="button" className="mb-[20px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        <button onClick={handleOpenFormAdd} type="button" className="mb-[20px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg width="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -159,6 +169,19 @@ const TableUsers = ({handleChangeData, checkData, setCheckData, userUpdate, setU
                 </div>
             </div>
         </div>
+        }
+        {isOpenFormAdd && 
+            <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px] px-[10px]">
+                <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg px-[20px] py-[20px]">
+                    <FormAddUser 
+                        onClose={closeFormAdd}
+                        dataUsers = {listUsers}
+                        setIsReload={setIsReload}
+                        setCheckData={setCheckData}
+                        setUserUpdate={setUserUpdate}
+                    />
+                </div>
+            </div>
         }
         </>
     )
