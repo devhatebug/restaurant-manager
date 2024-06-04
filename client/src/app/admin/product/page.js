@@ -1,8 +1,28 @@
-import React from "react";
+'use client'
+import React, { useState, useEffect } from "react";
 import TableProducts from "@/components/tableProducts";
 import axios from "axios";
 
 const Product = () => {
+    const URL_API = `http://127.0.0.1:8080/api-menu/menu`;
+    const [dataProducts, setDataProducts] = useState();
+    const [middleCheck, setMiddleCheck] = useState(0);
+    const [lengthPagination, setLengthPagination] = useState();
+    const limit = 10;
+    const getAllProducts = async() => {
+        try {
+            const res = await axios.get(`${URL_API}`);
+            setDataProducts(res.data);
+            const lenghtAllProducts = res.data.length;
+            setLengthPagination(Math.ceil(lenghtAllProducts / limit));
+            setMiddleCheck(0);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    useEffect(() => {
+        getAllProducts();
+    }, [middleCheck]);
     return(
         <div className="products ml-0 sm:ml-[260px] pl-[10px] pr-[10px]">
             <div className="flex items-center justify-between pt-[30px] mb-[50px]">
@@ -31,6 +51,11 @@ const Product = () => {
             </div>
             <div className="table-users mb-[30px]">
                 <TableProducts 
+                    products={dataProducts}
+                    middleCheck={middleCheck}
+                    setMiddleCheck={setMiddleCheck}
+                    lengthPagination={lengthPagination}
+                    limit={limit}
                 />
             </div>
 

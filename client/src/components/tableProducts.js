@@ -1,15 +1,42 @@
 'use client'
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
 import Pagination from "./pagination";
+import FormAddProduct from "./formAddProduct";
 
-const TableProducts = () => {
+const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination, limit}) => {
+    const URL_API = `http://127.0.0.1:8080/api-menu/products`;
     const [currentPage, setCurrentPage] = useState(1);
-    const [lengthPagination, setLengthPagination] = useState(3);
-    return(
+    const [dataProducts, setDataProducts] = useState([]);
+    const offset = (currentPage - 1) * limit;
+    const [isOpenFormAdd, setIsOpenFormAdd] = useState(false);
+    const openFormAdd = () => {
+        setIsOpenFormAdd(true)
+    }
+    const closeFormAdd = () => {
+        setIsOpenFormAdd(false);
+    }
+    const formatPrice = (price) => {
+        return price.toLocaleString('vi-VN');
+    }
+    const getProducts = async () => {
+        try {
+            const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
+            setDataProducts(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    useEffect(() => {
+        getProducts();
+    }, [currentPage, limit]);
+    // useEffect(() => {
+    //     console.table(dataProducts)
+    // })
+    return( 
         <>
         <div className="flex item-center justify-between flex-wrap">
-            <button type="button" className="mb-[20px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={openFormAdd} type="button" className="mb-[20px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg width="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -68,42 +95,44 @@ const TableProducts = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="bg-white border-b hover:bg-gray-50">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            Apple MacBook Pro 17"
-                        </th>
-                        <td className="px-6 py-4">
-                            Silver
-                        </td>
-                        <td className="px-6 py-4">
-                            Laptop
-                        </td>
-                        <td className="px-6 py-4">
-                            Yes
-                        </td>
-                        <td className="px-6 py-4">
-                            Yes
-                        </td>
-                        <td className="px-6 py-4">
-                            $2999
-                        </td>
-                        <td className="px-6 py-4">
-                            3.0 lb.
-                        </td>
-                        <td className="px-6 py-4">
-                            Yes
-                        </td>
-                        <td className="px-6 py-4">
-                            $2999
-                        </td>
-                        <td className="px-6 py-4">
-                            3.0 lb.
-                        </td>
-                        <td className="flex items-center px-6 py-4">
-                            <button className="font-medium text-blue-600 hover:underline">Edit</button>
-                            <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
-                        </td>
-                    </tr>
+                    {dataProducts.map((dt,id) => (
+                        <tr key={id} className="bg-white border-b hover:bg-gray-50">
+                            <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap">
+                                {dt.nameItem}
+                            </th>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {formatPrice(dt.price) + "đ"}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.classify}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.endow}%
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {formatPrice(dt.price - dt.price*(dt.endow)/100) + "đ"}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.isNew === false ? `✗` : `✓`}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.isHot === false ? `✗` : `✓`}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.isSeller === false ? `✗` : `✓`}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.feedback}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                {dt.statusItem === true ? `Còn hàng` : `Hết`}
+                            </td>
+                            <td className="flex items-center px-6 py-4">
+                                <button className="font-medium text-blue-600 hover:underline">Edit</button>
+                                <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
@@ -114,6 +143,11 @@ const TableProducts = () => {
                 lengthPagination={lengthPagination}
             />
         </div>
+        {isOpenFormAdd &&
+            <FormAddProduct 
+                onClose={closeFormAdd}
+            />
+        }
         </>
     )
 }
