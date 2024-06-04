@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise')
 const Menu = require('../models/menuModel');
-const {getData, getDataById, addData, updateData, deleteData} = require('../utils/crud');
+const {getData, getDataById, addData, updateData, deleteData, getDataLimit} = require('../utils/crud');
 
 // hien thi data menu
 const getMenu = (req, res) => {
@@ -11,6 +11,12 @@ const getMenu = (req, res) => {
 const getMenuByID = (req,res) => {
     const idItem = req.params.idItem;
     getDataById(req, res, Menu, idItem);
+}
+
+// hien thi menu theo trang
+const getMenuLimit = (req, res) => {
+    const {offset, limit} = req.query;
+    getDataLimit(req, res, Menu, limit, offset);
 }
 
 //them data menu
@@ -57,4 +63,4 @@ const deleteItemMenu = async(req, res) => {
     deleteData(req, res, Menu, idItem)
 }
 
-module.exports = {getMenu, getMenuByID, addMenu, updateMenu, deleteItemMenu}
+module.exports = {getMenu, getMenuByID, getMenuLimit, addMenu, updateMenu, deleteItemMenu}
