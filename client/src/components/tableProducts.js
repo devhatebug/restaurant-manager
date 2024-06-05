@@ -10,6 +10,7 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
     const [dataProducts, setDataProducts] = useState([]);
     const offset = (currentPage - 1) * limit;
     const [isOpenFormAdd, setIsOpenFormAdd] = useState(false);
+    const [isReload, setIsReload] = useState(0);
     const openFormAdd = () => {
         setIsOpenFormAdd(true)
     }
@@ -23,13 +24,18 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
         try {
             const res = await axios.get(`${URL_API}?offset=${offset}&limit=${limit}`);
             setDataProducts(res.data);
+            setIsReload(0);
         } catch (err) {
             console.log(err);
         }
     };
     useEffect(() => {
+        middleCheck === 0 && setIsReload(0);
+        middleCheck === 1 && setIsReload(1);
+    }, [middleCheck])
+    useEffect(() => {
         getProducts();
-    }, [currentPage, limit]);
+    }, [currentPage, limit, isReload]);
     // useEffect(() => {
     //     console.table(dataProducts)
     // })
@@ -48,10 +54,13 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
             <div className="flex items-center mb-[20px]">
                 <label className="w-[80px] p-[5px] font-medium text-sm" htmlFor="category">Bộ lọc</label>
                 <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
+                    <option value="snack">Đồ ăn vặt</option>
+                    <option value="barbecue">Đồ nướng</option>
+                    <option value="fried">Đồ chiên</option>
+                    <option value="steamed">Đồ hấp</option>
+                    <option value="drink">Đồ uống</option>
+                    <option value="desert">Tráng miệng</option>
+                    <option value="other">Khác</option>
                 </select>
             </div>
         </div>
@@ -146,6 +155,7 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
         {isOpenFormAdd &&
             <FormAddProduct 
                 onClose={closeFormAdd}
+                setMiddleCheck={setMiddleCheck}
             />
         }
         </>
