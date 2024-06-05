@@ -9,12 +9,12 @@ const FormAddProduct = ({onClose, setMiddleCheck}) => {
     const [code, setCode] = useState();
     const [name, setName] = useState();
     const [img, setImg] = useState();
-    const [classify, setClassify] = useState("");
+    const [classify, setClassify] = useState("main meal");
     const [endow, setEndow] = useState();
     const [isNew, setIsNew] = useState(0);
     const [isHot, setIsHot] = useState(0);
     const [isSeller, setIsSeller] = useState(0);
-    const feedback = 0;
+    const feedback = [];
     const [status, setStatus] = useState(0);
     const [price, setPrice] = useState();
     const [base64Img, setBase64Img] = useState();
@@ -111,6 +111,7 @@ const FormAddProduct = ({onClose, setMiddleCheck}) => {
                             <div>
                                 <label htmlFor="category-form-add" className="block mb-2 text-sm font-medium text-gray-900">Danh mục</label>
                                 <select value={classify} onChange={(e) => setClassify(e.target.value)} id="category-form-add" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                                    <option value="main meal">Đồ ăn bữa chính</option>
                                     <option value="snack">Đồ ăn vặt</option>
                                     <option value="barbecue">Đồ nướng</option>
                                     <option value="fried">Đồ chiên</option>

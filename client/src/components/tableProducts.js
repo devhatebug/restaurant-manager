@@ -54,6 +54,8 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
             <div className="flex items-center mb-[20px]">
                 <label className="w-[80px] p-[5px] font-medium text-sm" htmlFor="category">Bộ lọc</label>
                 <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="null">Không có</option>
+                    <option value="main meal">Đồ ăn bữa chính</option>
                     <option value="snack">Đồ ăn vặt</option>
                     <option value="barbecue">Đồ nướng</option>
                     <option value="fried">Đồ chiên</option>
@@ -93,9 +95,6 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                             món bán chạy
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            đánh giá
-                        </th>
-                        <th scope="col" className="px-6 py-3">
                             trạng thái
                         </th>
                         <th scope="col" className="px-6 py-3">
@@ -113,7 +112,14 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                                 {formatPrice(dt.price) + "đ"}
                             </td>
                             <td className="px-6 py-4 text-gray-900 font-medium">
-                                {dt.classify}
+                                {dt.classify === 'main meal' && 'Đồ ăn bữa chính'}
+                                {dt.classify === 'snack' && 'Đồ ăn vặt'}
+                                {dt.classify === 'barbecue' && 'Đồ nướng'}
+                                {dt.classify === "fried" && 'Đồ chiên'}
+                                {dt.classify === "steamed" && 'Đồ hấp'}
+                                {dt.classify === "drink" && 'Đồ uống'}
+                                {dt.classify === "desert" && 'Tráng miệng'}
+                                {dt.classify === "other" && 'Khác'}
                             </td>
                             <td className="px-6 py-4 text-gray-900 font-medium">
                                 {dt.endow}%
@@ -129,9 +135,6 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                             </td>
                             <td className="px-6 py-4 text-gray-900 font-medium">
                                 {dt.isSeller === false ? `✗` : `✓`}
-                            </td>
-                            <td className="px-6 py-4 text-gray-900 font-medium">
-                                {dt.feedback}
                             </td>
                             <td className="px-6 py-4 text-gray-900 font-medium">
                                 {dt.statusItem === true ? `Còn hàng` : `Hết`}

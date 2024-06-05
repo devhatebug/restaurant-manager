@@ -11,7 +11,7 @@ const Menu = connection.define('menu', {
   isNew: {type: DataTypes.BOOLEAN},
   isHot: {type: DataTypes.BOOLEAN},
   isSeller: {type: DataTypes.BOOLEAN,},
-  feedback: {type: DataTypes.INTEGER},
+  feedback: {type: DataTypes.JSON},
   statusItem: {type:DataTypes.BOOLEAN, allowNull:false},
   price: {type:DataTypes.INTEGER, allowNull:false},
 },{tableName: 'menu', timestamps: false})
