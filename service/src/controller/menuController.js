@@ -13,6 +13,22 @@ const getMenuByID = (req,res) => {
     getDataById(req, res, Menu, idItem);
 }
 
+const getProductByClassify = async(req, res) => {
+    const classify = req.params.classify;
+    try {
+        const dataSelector = await Menu.findAll(
+            {
+                where : {classify: classify}
+            }
+        )
+        res.send(dataSelector);
+    }
+    catch(err) {
+        console,log(err);
+        res.status(500).send('Server Error');
+    }
+}
+
 // hien thi menu theo trang
 const getMenuLimit = (req, res) => {
     const {offset, limit} = req.query;
@@ -63,4 +79,4 @@ const deleteItemMenu = async(req, res) => {
     deleteData(req, res, Menu, idItem)
 }
 
-module.exports = {getMenu, getMenuByID, getMenuLimit, addMenu, updateMenu, deleteItemMenu}
+module.exports = {getMenu, getMenuByID, getProductByClassify, getMenuLimit, addMenu, updateMenu, deleteItemMenu}
