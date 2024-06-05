@@ -11,6 +11,31 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
     const offset = (currentPage - 1) * limit;
     const [isOpenFormAdd, setIsOpenFormAdd] = useState(false);
     const [isReload, setIsReload] = useState(0);
+    const [isFilter, setIsFilter] = useState(false);
+    const [dataFilter, setDataFilter] = useState("");
+    const [productsFilter, setProductsFilter] = useState([]);
+    useEffect(() => {
+        if(dataFilter !== "" && dataFilter !== "null") {
+            setIsFilter(true);
+        } else {
+            setIsFilter(false)
+        }
+    }, [dataFilter]);
+    useEffect(() => {
+        products && setProductsFilter(products.filter(product => product.classify === dataFilter))
+    }, [dataFilter])
+    useEffect(() => {
+        if(isFilter) {
+            if (Array.isArray(productsFilter) && productsFilter.length) {
+                setDataProducts(productsFilter);
+            } else {
+                setDataProducts([]);
+            }
+        } else {
+            setIsReload(1);
+            setIsFilter(false)
+        }
+    }, [isFilter, productsFilter])
     const openFormAdd = () => {
         setIsOpenFormAdd(true)
     }
@@ -36,9 +61,6 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
     useEffect(() => {
         getProducts();
     }, [currentPage, limit, isReload]);
-    // useEffect(() => {
-    //     console.table(dataProducts)
-    // })
     return( 
         <>
         <div className="flex item-center justify-between flex-wrap">
@@ -53,7 +75,7 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
             </button>
             <div className="flex items-center mb-[20px]">
                 <label className="w-[80px] p-[5px] font-medium text-sm" htmlFor="category">Bộ lọc</label>
-                <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <select value={dataFilter} onChange={(e) => setDataFilter(e.target.value)} id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     <option value="null">Không có</option>
                     <option value="main meal">Đồ ăn bữa chính</option>
                     <option value="snack">Đồ ăn vặt</option>
