@@ -3,6 +3,7 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import Pagination from "./pagination";
 import FormAddProduct from "./formAddProduct";
+import FormEditProduct from "./formEditProduct";
 
 const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination, limit}) => {
     const URL_API = `http://127.0.0.1:8080/api-menu/products`;
@@ -10,10 +11,26 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
     const [dataProducts, setDataProducts] = useState([]);
     const offset = (currentPage - 1) * limit;
     const [isOpenFormAdd, setIsOpenFormAdd] = useState(false);
+    const [isOpenFormEdit, setIsOpenFormEdit] = useState(false);
     const [isReload, setIsReload] = useState(0);
     const [isFilter, setIsFilter] = useState(false);
     const [dataFilter, setDataFilter] = useState("");
     const [productsFilter, setProductsFilter] = useState([]);
+    const [productSelected, setProductSeleted] = useState([]);
+    const handleOpenFormEdit = async(e) => {
+        const idProduct = e.target.value;
+        try {
+            const productSelected = await axios.get(`http://127.0.0.1:8080/api-menu/menu/${idProduct}`)
+            setProductSeleted(productSelected.data);
+            setIsOpenFormEdit(true)
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
+    const closeFormEdit = () => {
+        setIsOpenFormEdit(false);
+    }
     useEffect(() => {
         if(dataFilter !== "" && dataFilter !== "null") {
             setIsFilter(true);
@@ -159,10 +176,10 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                                 {dt.isSeller === false ? `✗` : `✓`}
                             </td>
                             <td className="px-6 py-4 text-gray-900 font-medium">
-                                {dt.statusItem === true ? `Còn hàng` : `Hết`}
+                                {dt.statusItem === true ? `Còn hàng` : `Hết hàng`}
                             </td>
                             <td className="flex items-center px-6 py-4">
-                                <button className="font-medium text-blue-600 hover:underline">Edit</button>
+                                <button value={dt.id} onClick={handleOpenFormEdit} className="font-medium text-blue-600 hover:underline">Edit</button>
                                 <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
                             </td>
                         </tr>
@@ -181,6 +198,14 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
             <FormAddProduct 
                 onClose={closeFormAdd}
                 setMiddleCheck={setMiddleCheck}
+            />
+        }
+        {isOpenFormEdit &&
+            <FormEditProduct
+                onClose={closeFormEdit}
+                dataProduct={productSelected}
+                setMiddleCheck={setMiddleCheck}
+                products={products}
             />
         }
         </>
