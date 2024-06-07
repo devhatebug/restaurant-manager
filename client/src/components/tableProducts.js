@@ -78,6 +78,16 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
     useEffect(() => {
         getProducts();
     }, [currentPage, limit, isReload]);
+    const handleDeleteProduct = async(e) => {
+        const idProduct = e.target.value;
+        try {
+            await axios.delete(`http://127.0.0.1:8080/api-menu/delete-menu/${idProduct}`)
+            setMiddleCheck(1);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
     return( 
         <>
         <div className="flex item-center justify-between flex-wrap">
@@ -180,7 +190,7 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                             </td>
                             <td className="flex items-center px-6 py-4">
                                 <button value={dt.id} onClick={handleOpenFormEdit} className="font-medium text-blue-600 hover:underline">Edit</button>
-                                <button className="font-medium text-red-600 hover:underline ms-3">Remove</button>
+                                <button value={dt.id} onClick={handleDeleteProduct} className="font-medium text-red-600 hover:underline ms-3">Remove</button>
                             </td>
                         </tr>
                     ))}

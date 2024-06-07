@@ -170,7 +170,7 @@ const FormAddProduct = ({onClose, setMiddleCheck}) => {
                                 {isImg && 
                                     <div className="relative w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer p-[5px]">
                                         <button onClick={handleCancelFile} className="absolute bg-rose-600 p-[10px] rounded-lg top-[10px] left-[10px] text-white font-medium ">
-                                            Cancel
+                                            Thay đổi
                                         </button>
                                         <img className="" src={base64Img} alt="" />
                                     </div>
