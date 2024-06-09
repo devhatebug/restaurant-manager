@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { blobtoBase64, fileToBase64 } from "@/utils/toBase64";
 import axios from "axios";
 
-const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products}) => {
+const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAddErr, setAddFinish}) => {
     const data = dataProduct[0];
     // state data 
     const [name, setName] = useState(data.nameItem);
@@ -62,9 +62,17 @@ const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products}) => {
                 await axios.put(`http://127.0.0.1:8080/api-menu/update-menu`, dataUpdate);
                 console.log('done');
                 setMiddleCheck(1);
+                setAddFinish(true);
+                setTimeout(() => {
+                    setAddFinish(false)
+                }, 3000)
                 onClose();
             } catch (err) {
                 console.log(err);
+                setAddErr(true);
+                setTimeout(() => {
+                    setAddErr(false)
+                }, 3000)
             }
         }
         else {

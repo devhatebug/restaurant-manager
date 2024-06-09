@@ -8,6 +8,10 @@ const Product = () => {
     const [dataProducts, setDataProducts] = useState();
     const [middleCheck, setMiddleCheck] = useState(0);
     const [lengthPagination, setLengthPagination] = useState();
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isErr, setIsErr] = useState(false);
+    const [addFinish,setAddFinish] = useState(false);
+    const [addErr, setAddErr] = useState(false);
     const limit = 10;
     const getAllProducts = async() => {
         try {
@@ -56,9 +60,40 @@ const Product = () => {
                     setMiddleCheck={setMiddleCheck}
                     lengthPagination={lengthPagination}
                     limit={limit}
+                    setIsSuccess={setIsSuccess}
+                    setIsErr={setIsErr}
+                    setAddErr={setAddErr}
+                    setAddFinish={setAddFinish}
                 />
             </div>
-
+            <div className="flex flex-col absolute bottom-[10px] right-[10px]">
+                {isSuccess && 
+                    <div role="alert" className="alert alert-success absolute bottom-[10px] right-[10px] text-white w-[auto] font-medium animate-slideInRight ">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Thêm sản phẩm thành công</span>
+                    </div>
+                }
+                {isErr && 
+                    <div role="alert" className="alert alert-error absolute bottom-[10px] right-[10px] text-white w-[auto] font-medium animate-slideInRight ">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Lỗi! Đã xãy ra lỗi</span>
+                    </div>
+                }
+            </div>
+            <div className="flex flex-col absolute bottom-[10px] right-[10px]">
+                {addFinish && 
+                    <div role="alert" className="alert alert-success text-white w-[auto] font-medium animate-slideInRight my-[10px] ">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Chỉnh sửa thành công sản phẩm</span>
+                    </div>
+                }
+                {addErr && 
+                    <div role="alert" className="alert alert-error text-white w-[auto] font-medium animate-slideInRight ">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Lỗi! Đã xãy ra lỗi</span>
+                    </div>
+                }
+            </div>
         </div>
     )
 }

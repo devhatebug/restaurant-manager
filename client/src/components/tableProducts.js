@@ -5,7 +5,7 @@ import Pagination from "./pagination";
 import FormAddProduct from "./formAddProduct";
 import FormEditProduct from "./formEditProduct";
 
-const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination, limit}) => {
+const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination, limit, setIsSuccess, setIsErr, setAddErr, setAddFinish}) => {
     const URL_API = `http://127.0.0.1:8080/api-menu/products`;
     const [currentPage, setCurrentPage] = useState(1);
     const [dataProducts, setDataProducts] = useState([]);
@@ -208,6 +208,8 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
             <FormAddProduct 
                 onClose={closeFormAdd}
                 setMiddleCheck={setMiddleCheck}
+                setIsErr={setIsErr}
+                setIsSuccess={setIsSuccess}
             />
         }
         {isOpenFormEdit &&
@@ -216,6 +218,8 @@ const TableProducts = ({products, middleCheck, setMiddleCheck, lengthPagination,
                 dataProduct={productSelected}
                 setMiddleCheck={setMiddleCheck}
                 products={products}
+                setAddErr={setAddErr}
+                setAddFinish={setAddFinish}
             />
         }
         </>

@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {fileToBase64} from "@/utils/toBase64";
-const FormAddProduct = ({onClose, setMiddleCheck}) => {
+const FormAddProduct = ({onClose, setMiddleCheck, setIsErr, setIsSuccess}) => {
     // state kiểm tra lỗi
     const [isEmpty, setIsEmpty] = useState(false);
     // state data
@@ -57,9 +57,17 @@ const FormAddProduct = ({onClose, setMiddleCheck}) => {
             try {
                 await axios.post('http://127.0.0.1:8080/api-menu/add-menu', dataNewProfuct)
                 setMiddleCheck(1);
+                setIsSuccess(true)
+                 setTimeout(() => {
+                    setIsSuccess(false);
+                    }, 3000);
                 onClose();
             } catch (err) {
                 console.error(err);
+                setIsErr(true)
+                setTimeout(() => {
+                    setIsErr(false);
+                }, 3000);
             }
         } else {
             setIsEmpty(true)
