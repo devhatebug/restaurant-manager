@@ -11,6 +11,7 @@ const Users = connection.define('users', {
   address : {type:DataTypes.STRING, allowNull:false},
   phone : {type:DataTypes.STRING, allowNull:false},
   roleUser: {type: DataTypes.STRING, allowNull:false},
+  cart: {type:DataTypes.JSON, allowNull:true}
 },{tableName: 'users', timestamps: false})
 
 module.exports = Users;
