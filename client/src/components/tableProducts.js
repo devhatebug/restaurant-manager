@@ -4,6 +4,7 @@ import axios from "axios";
 import Pagination from "./pagination";
 import FormAddProduct from "./formAddProduct";
 import FormEditProduct from "./formEditProduct";
+import formatPrice from "@/utils/formatPrice";
 
 const TableProducts = ({
   products,
@@ -77,9 +78,6 @@ const TableProducts = ({
   };
   const closeFormAdd = () => {
     setIsOpenFormAdd(false);
-  };
-  const formatPrice = (price) => {
-    return price.toLocaleString("vi-VN");
   };
   const getProducts = async () => {
     try {

@@ -1,6 +1,6 @@
-import HomePage from "@/pages/homePage/page"
+import HomePage from "@/pages/homaePage"
 export default function Home() {
   return (
-    <div><HomePage /></div>
+    <div className="h-auto w-[100%]"><HomePage /></div>
   );
 }
