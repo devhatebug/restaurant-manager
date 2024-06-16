@@ -59,16 +59,6 @@ const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAdd
     const handleUpdateProduct = async () => {
       const checkValue = products.find((product) => product.codeItem === code);
       const maxSizeImg = 2 * 1024 * 1024;
-
-      // Kiểm tra kích thước ảnh trước
-      if (img.size > maxSizeImg) {
-        setMaxSize(true);
-        setIsWarning(true);
-        setCode(data.codeItem);
-        return; // Dừng lại nếu ảnh quá lớn
-      }
-
-      // Kiểm tra điều kiện tổng thể
       if (
         code === data.codeItem ||
         (checkValue === undefined && img.size <= maxSizeImg)
