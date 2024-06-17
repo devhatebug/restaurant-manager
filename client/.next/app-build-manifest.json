@@ -28,6 +28,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/admin/login/page.js"
     ],
+    "/admin/users/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/users/page.js"
+    ],
     "/admin/product/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
