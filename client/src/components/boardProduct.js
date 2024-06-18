@@ -25,33 +25,55 @@ const BoardProducts = () => {
     getAllProducts();
   }, []);
 
+  // function random product 
+  const handleRandomPro = (arr, num) => {
+    const arrClone = [...arr];
+    for (let i = arrClone.length - 1; i>0; i--) {
+      let j = Math.floor(Math.random() * (i+1));
+      [arrClone[i], arrClone[j] = arrClone[j], arrClone[i]];
+    }
+    return arrClone.slice(0, num)
+  }
+
   useEffect(() => {
     const proEndow = dataProducts.filter((pro) => pro.endow > 0);
     const proNew = dataProducts.filter((pro) => pro.isNew === true);
     const proSell = dataProducts.filter((pro) => pro.isSeller === true);
-    setProEndow(proEndow);
-    setProNew(proNew);
-    setProSell(proSell);
+    setProEndow(handleRandomPro(proEndow, 4));
+    setProNew(handleRandomPro(proNew, 4));
+    setProSell(handleRandomPro(proSell, 4));
   }, [dataProducts]);
+
+  //client loading
+  const SkeletonCard = () => (
+    <div className="flex flex-col gap-4 w-52 mx-[10px] my-[15px]">
+      <div className="skeleton h-32 w-full"></div>
+      <div className="skeleton h-4 w-28"></div>
+      <div className="skeleton h-4 w-full"></div>
+      <div className="skeleton h-4 w-full"></div>
+    </div>
+  );
+
+  const SkeletonGrid = ({ count }) => (
+    <div className="flex flex-wrap items-center justify-center">
+      {Array.from({ length: count }).map((_, index) => (
+        <SkeletonCard key={index} />
+      ))}
+    </div>
+  );
+
 
   return (
     <div className="flex flex-col my-[30px] px-[20px]">
-      <div className="category my-[20px]">
-        <div className="title font-semibold text-xl uppercase">
+      <div className="category my-[20px] flex flex-col items-center mb-[50px]">
+        <div className="title font-bold text-xl uppercase">
           <h4>Sản phẩm giảm giá</h4>
         </div>
-        <div className="listProducts">
+        <div className="listProducts mt-[20px]">
           <ul className="listItem flex flex-wrap items-center justify-center">
-            {isLoading && (
-              <div className="flex flex-col gap-4 w-52">
-                <div className="skeleton h-32 w-full"></div>
-                <div className="skeleton h-4 w-28"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-full"></div>
-              </div>
-            )}
+            {isLoading && <SkeletonGrid count={4} />}
             {proEndow.map((dt, id) => (
-              <li key={id} className="item mx-[15px] my-[15px]">
+              <li key={id} className="item mx-[10px] my-[15px]">
                 <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
                   <button className="relative">
                     <img
@@ -90,7 +112,7 @@ const BoardProducts = () => {
                         3
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap">
                       <div className="flex flex-col">
                         <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                           {formatPrice(dt.price)} VND
@@ -130,23 +152,17 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
+        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
       </div>
-      <div className="category my-[20px]">
-        <div className="title font-semibold text-xl uppercase">
+      <div className="category my-[20px] flex flex-col items-center mb-[50px]">
+        <div className="title font-bold text-xl uppercase">
           <h4>Sản phẩm mới</h4>
         </div>
-        <div className="listProducts">
+        <div className="listProducts mt-[20px]">
           <ul className="listItem flex flex-wrap items-center justify-center">
-            {isLoading && (
-              <div className="flex flex-col gap-4 w-52">
-                <div className="skeleton h-32 w-full"></div>
-                <div className="skeleton h-4 w-28"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-full"></div>
-              </div>
-            )}
+            {isLoading && <SkeletonGrid count={4} />}
             {proNew.map((dt, id) => (
-              <li key={id} className="item mx-[15px] my-[15px]">
+              <li key={id} className="item mx-[10px] my-[15px]">
                 <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
                   <button className="relative">
                     <img
@@ -185,7 +201,7 @@ const BoardProducts = () => {
                         3
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap">
                       <div className="flex flex-col">
                         <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                           {formatPrice(dt.price)} VND
@@ -225,23 +241,17 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
+        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
       </div>
-      <div className="category my-[20px]">
-        <div className="title font-semibold text-xl uppercase">
+      <div className="category my-[20px] flex flex-col items-center mb-[50px]">
+        <div className="title font-bold text-xl uppercase">
           <h4>Sản phẩm bán chạy</h4>
         </div>
-        <div className="listProducts">
+        <div className="listProducts mt-[20px]">
           <ul className="listItem flex flex-wrap items-center justify-center">
-            {isLoading && (
-              <div className="flex flex-col gap-4 w-52">
-                <div className="skeleton h-32 w-full"></div>
-                <div className="skeleton h-4 w-28"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-full"></div>
-              </div>
-            )}
+            {isLoading && <SkeletonGrid count={4} />}
             {proSell.map((dt, id) => (
-              <li key={id} className="item mx-[15px] my-[15px]">
+              <li key={id} className="item mx-[10px] my-[15px]">
                 <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
                   <button className="relative">
                     <img
@@ -280,7 +290,7 @@ const BoardProducts = () => {
                         3
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap">
                       <div className="flex flex-col">
                         <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                           {formatPrice(dt.price)} VND
@@ -320,6 +330,7 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
+        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
       </div>
     </div>
   );
