@@ -10,6 +10,9 @@ const BoardProducts = () => {
   const [proEndow, setProEndow] = useState([]);
   const [proNew, setProNew] = useState([]);
   const [proSell, setProSell] = useState([]);
+  const [idSelect, setIdSelect] = useState();
+  const [isProView, setIsProView] = useState(false);
+  const [proSelected, setProSelected] = useState([]);
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -25,15 +28,15 @@ const BoardProducts = () => {
     getAllProducts();
   }, []);
 
-  // function random product 
+  // function random product
   const handleRandomPro = (arr, num) => {
     const arrClone = [...arr];
-    for (let i = arrClone.length - 1; i>0; i--) {
-      let j = Math.floor(Math.random() * (i+1));
-      [arrClone[i], arrClone[j] = arrClone[j], arrClone[i]];
+    for (let i = arrClone.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arrClone[i], (arrClone[j] = arrClone[j]), arrClone[i]];
     }
-    return arrClone.slice(0, num)
-  }
+    return arrClone.slice(0, num);
+  };
 
   useEffect(() => {
     const proEndow = dataProducts.filter((pro) => pro.endow > 0);
@@ -61,8 +64,23 @@ const BoardProducts = () => {
       ))}
     </div>
   );
-
-
+  // function show product quickviews
+  const selectIdPro = (e) => {
+    setIdSelect(e.target.value);
+    setIsProView(true);
+  };
+  // get product by id
+  useEffect(() => {
+    const getProductSelect = async () => {
+      try {
+        const proSelect = await axios.get(`${URL_API}/${idSelect}`);
+        setProSelected(proSelect.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProductSelect();
+  }, [idSelect]);
   return (
     <div className="flex flex-col my-[30px] px-[20px]">
       <div className="category my-[20px] flex flex-col items-center mb-[50px]">
@@ -141,9 +159,11 @@ const BoardProducts = () => {
                       </button>
                       <button
                         type="button"
+                        value={dt.id}
+                        onClick={(e) => selectIdPro(e)}
                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
                       >
-                        Buy
+                        Order
                       </button>
                     </div>
                   </div>
@@ -230,9 +250,11 @@ const BoardProducts = () => {
                       </button>
                       <button
                         type="button"
+                        value={dt.id}
+                        onClick={(e) => selectIdPro(e)}
                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
                       >
-                        Buy
+                        Order
                       </button>
                     </div>
                   </div>
@@ -319,9 +341,11 @@ const BoardProducts = () => {
                       </button>
                       <button
                         type="button"
+                        value={dt.id}
+                        onClick={(e) => selectIdPro(e)}
                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
                       >
-                        Buy
+                        Order
                       </button>
                     </div>
                   </div>
