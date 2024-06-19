@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 const HomePage = () => {
   return (
     <div className="w-[100%]">
+      <Navbar />
       <div className="">
         <Carousel />
       </div>

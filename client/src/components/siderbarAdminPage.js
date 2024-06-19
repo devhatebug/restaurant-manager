@@ -1,29 +1,31 @@
 "use client";
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+
 const SiderBarAdminPage = () => {
   const router = useRouter();
-  const { path, query, asPath } = router;
   const pathname = usePathname();
+
+  // Không render sidebar nếu là trang login
   if (pathname === "/admin/login") {
-    return <p></p>;
+    return null;
   }
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isFollow, setIsFollow] = useState(true);
 
-  // function toogleListAction
-  const toogleFollow = () => {
+  const toggleFollow = () => {
     setIsFollow(!isFollow);
   };
 
-  // function toogleSiderBar
   const openSidebar = () => {
     setIsSidebarOpen(true);
   };
-  const closeSiderBar = () => {
+
+  const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
+
   return (
     <>
       <button
@@ -57,9 +59,9 @@ const SiderBarAdminPage = () => {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-800">
-          {isSidebarOpen === true && (
+          {isSidebarOpen && (
             <button
-              onClick={closeSiderBar}
+              onClick={closeSidebar}
               className="mb-[10px] right-[-40px] absolute"
             >
               <svg
@@ -117,7 +119,7 @@ const SiderBarAdminPage = () => {
             </li>
             <li className="cursor-pointer">
               <div
-                onClick={toogleFollow}
+                onClick={toggleFollow}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group"
               >
                 <svg
@@ -132,23 +134,7 @@ const SiderBarAdminPage = () => {
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   Theo dõi đơn
                 </span>
-                {isFollow === false ? (
-                  <span>
-                    <svg
-                      width="15px"
-                      height="15px"
-                      viewBox="0 0 1024 1024"
-                      className="icon"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z"
-                        fill="white"
-                      />
-                    </svg>
-                  </span>
-                ) : (
+                {isFollow ? (
                   <span>
                     <svg
                       width="15px"
@@ -164,9 +150,25 @@ const SiderBarAdminPage = () => {
                       />
                     </svg>
                   </span>
+                ) : (
+                  <span>
+                    <svg
+                      width="15px"
+                      height="15px"
+                      viewBox="0 0 1024 1024"
+                      className="icon"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z"
+                        fill="white"
+                      />
+                    </svg>
+                  </span>
                 )}
               </div>
-              {isFollow === true && (
+              {isFollow && (
                 <ul className="text-sm max-w-md space-y-1 text-gray-400">
                   <li
                     className={`cursor-pointer hover:bg-gray-700 p-[5px] rounded-lg ml-[40px] ${
@@ -233,7 +235,7 @@ const SiderBarAdminPage = () => {
                   fill="currentColor"
                   viewBox="0 0 18 20"
                 >
-                  <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z" />
+                  <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2Z" />
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   Quản lí sản phẩm
@@ -270,4 +272,4 @@ const SiderBarAdminPage = () => {
   );
 };
 
-module.exports = SiderBarAdminPage;
+export default SiderBarAdminPage;
