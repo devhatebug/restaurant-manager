@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
+import ProductQuickViews from "./productQuickViews";
 
 const BoardProducts = () => {
   const URL_API = `http://127.0.0.1:8080/api-menu/menu`;
@@ -13,6 +14,12 @@ const BoardProducts = () => {
   const [idSelect, setIdSelect] = useState();
   const [isProView, setIsProView] = useState(false);
   const [proSelected, setProSelected] = useState([]);
+  const [quaEndow, setQuaEndow] = useState(4);
+  const [quaNew, setQuaNew] = useState(4);
+  const [quaSell, setQuaSell] = useState(4);
+  const [disableEndow, setDisableEndow] = useState(false);
+  const [disableNew, setDisableNew] = useState(false);
+  const [disableSell, setDisableSell] = useState(false);
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -39,13 +46,18 @@ const BoardProducts = () => {
   };
 
   useEffect(() => {
-    const proEndow = dataProducts.filter((pro) => pro.endow > 0);
-    const proNew = dataProducts.filter((pro) => pro.isNew === true);
-    const proSell = dataProducts.filter((pro) => pro.isSeller === true);
-    setProEndow(handleRandomPro(proEndow, 4));
-    setProNew(handleRandomPro(proNew, 4));
-    setProSell(handleRandomPro(proSell, 4));
-  }, [dataProducts]);
+    const proEndowFiltered = dataProducts.filter((pro) => pro.endow > 0);
+    const proNewFiltered = dataProducts.filter((pro) => pro.isNew === true);
+    const proSellFiltered = dataProducts.filter((pro) => pro.isSeller === true);
+
+    setProEndow(handleRandomPro(proEndowFiltered, quaEndow));
+    setProNew(handleRandomPro(proNewFiltered, quaNew));
+    setProSell(handleRandomPro(proSellFiltered, quaSell));
+
+    setDisableEndow(quaEndow >= proEndowFiltered.length);
+    setDisableNew(quaNew >= proNewFiltered.length);
+    setDisableSell(quaSell >= proSellFiltered.length);
+  }, [dataProducts, quaEndow, quaNew, quaSell]);
 
   //client loading
   const SkeletonCard = () => (
@@ -68,6 +80,9 @@ const BoardProducts = () => {
   const selectIdPro = (e) => {
     setIdSelect(e.target.value);
     setIsProView(true);
+  };
+  const closeProView = () => {
+    setIsProView(false);
   };
   // get product by id
   useEffect(() => {
@@ -172,7 +187,13 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
-        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
+        <button
+          onClick={() => setQuaEndow(quaEndow + 4)}
+          className="btn btn-neutral mt-[30px]"
+          disabled={disableEndow}
+        >
+          Xem thêm
+        </button>
       </div>
       <div className="category my-[20px] flex flex-col items-center mb-[50px]">
         <div className="title font-bold text-xl uppercase">
@@ -263,7 +284,13 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
-        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
+        <button
+          onClick={() => setQuaNew(quaNew + 4)}
+          disabled={disableNew}
+          className="btn btn-neutral mt-[30px] "
+        >
+          Xem thêm
+        </button>
       </div>
       <div className="category my-[20px] flex flex-col items-center mb-[50px]">
         <div className="title font-bold text-xl uppercase">
@@ -354,8 +381,30 @@ const BoardProducts = () => {
             ))}
           </ul>
         </div>
-        <button className="btn btn-neutral mt-[30px] ">Xem tất cả</button>
+        <button
+          disabled={disableSell}
+          onClick={() => setQuaSell(quaSell + 4)}
+          className="btn btn-neutral mt-[30px] "
+        >
+          Xem thêm
+        </button>
       </div>
+      {isProView && (
+        <div>
+          <div className="fixed inset-0 bg-black opacity-50"></div>
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div className="w-[90%] overflow-y-auto max-w-4xl animate-openingPopup">
+              <ProductQuickViews
+                proSelected={proSelected}
+                onClose={closeProView}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      <button className="w-[230px] btn btn-neutral m-auto ">
+        <a href="/products">Xem tất cả các sản phẩm</a>
+      </button>
     </div>
   );
 };
