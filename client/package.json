@@ -14,7 +14,7 @@
     "clsx": "^2.1.1",
     "flowbite": "^2.3.0",
     "js-cookie": "^3.0.5",
-    "next": "14.2.3",
+    "next": "^14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "react-stars": "^2.2.5"
