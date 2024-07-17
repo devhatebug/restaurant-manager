@@ -1,9 +1,63 @@
 "use client";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import getAllUsers from "@/utils/getAllUser"
 const LoginPage = () => {
+  const router = useRouter();
+  const [username, setUserName] = useState();
+  const [password, setPassWord] = useState();
+  const [messageErr, setMessageErr] = useState();
+  const [notiErr, setNotiErr] = useState();
+  const [dataUsers, setDataUsers] = useState([]);
+  const getUsers = async () => {
+    try{
+      const users = await getAllUsers();
+      setDataUsers(users)
+      console.table(users)
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
+  useEffect(() => {
+    getUsers()
+  },[])
+  const selectUsername = (e) => {
+    setUserName(e.target.value);
+    setNotiErr(false);
+  };
+  const selectPassword = (e) => {
+    setPassWord(e.target.value);
+    setNotiErr(false);
+  };
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post("http://127.0.0.1:8080/api/auth/login", {
+        username: username,
+        password: password,
+      });
+      const { token } = res.data;
+      Cookies.set("token", token);
+      router.push("/");
+      alert("token: ", token);
+    } catch (error) {
+      setMessageErr(error.response.data.message);
+      setNotiErr(true);
+    }
+  };
   return (
     <>
+      {notiErr && (
+        <div
+          className="animate-slideInRight absolute bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 top-0 right-0"
+          role="alert"
+        >
+          <p className="font-bold">Error</p>
+          <p>{messageErr}</p>
+        </div>
+      )}
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6 mt-[-50px]">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
@@ -30,14 +84,15 @@ const LoginPage = () => {
             <div>
               <div>
                 <label
-                  htmlFor="usernameorphone"
+                  htmlFor="username"
                   className="block text-sm font-medium leading-5  text-gray-700"
                 >
-                  Tên người dùng hoặc số điện thoại
+                  Tên người dùng
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <input
-                    id="usernameorphone"
+                    onChange={selectUsername}
+                    id="username"
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                   <div className="hidden absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -69,6 +124,7 @@ const LoginPage = () => {
                     name="password"
                     type="password"
                     required=""
+                    onChange={selectPassword}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
@@ -94,7 +150,10 @@ const LoginPage = () => {
 
               <div className="mt-6">
                 <span className="block w-full rounded-md shadow-sm">
-                  <button className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                  <button
+                    onClick={handleLogin}
+                    className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                  >
                     Đăng nhập
                   </button>
                 </span>
