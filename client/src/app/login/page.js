@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import getAllUsers from "@/utils/getAllUser"
+import {jwtDecode} from "jwt-decode";
 const LoginPage = () => {
   const router = useRouter();
   const [username, setUserName] = useState();
@@ -23,7 +24,7 @@ const LoginPage = () => {
   }
   useEffect(() => {
     getUsers()
-  },[])
+  },[]);
   const selectUsername = (e) => {
     setUserName(e.target.value);
     setNotiErr(false);
@@ -39,9 +40,15 @@ const LoginPage = () => {
         password: password,
       });
       const { token } = res.data;
-      Cookies.set("token", token);
-      router.push("/");
-      alert("token: ", token);
+      const decodeToken = jwtDecode(token);
+      if(decodeToken.roleUser !== "admin") {
+        Cookies.set("token", token);
+        router.push("/");
+      }
+      else {
+        setMessageErr("Không thể dùng tài khoản admin");
+        setNotiErr(true);
+      }
     } catch (error) {
       setMessageErr(error.response.data.message);
       setNotiErr(true);

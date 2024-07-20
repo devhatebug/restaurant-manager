@@ -1,48 +1,64 @@
-"use client"
+"use client";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const FormLoginAdmin = () => {
   const router = useRouter();
   const [username, setUserName] = useState("");
-  const [password, setPassWord] = useState('');
+  const [password, setPassWord] = useState("");
   const [notiErr, setNotiErr] = useState();
-  const [messageErr, setMessageErr] = useState('')
+  const [messageErr, setMessageErr] = useState("");
 
   const getUserName = (e) => {
     setUserName(e.target.value);
     setNotiErr(false);
-  }
+  };
   const getPassWord = (e) => {
     setPassWord(e.target.value);
     setNotiErr(false);
-  }
+  };
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8080/api/auth/login', {
-        username: username,
-        password: password,
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:8080/api/auth/login",
+        {
+          username: username,
+          password: password,
+        }
+      );
 
       const { token } = response.data;
-      Cookies.set('token', token);
-      router.push('/admin');
-    } catch (error) {
-        setMessageErr(error.response.data.message)
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.roleUser === "admin") {
+        Cookies.set("token", token);
+        router.push("/admin");
+      } else {
+        setMessageErr("Tài khoản này không phải là tài khoản admin");
         setNotiErr(true);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred";
+      setMessageErr(errorMessage);
+      setNotiErr(true);
     }
   };
+
   return (
     <>
-      {notiErr && 
-        <div className="animate-slideInRight absolute bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 top-0 right-0" role="alert">
+      {notiErr && (
+        <div
+          className="animate-slideInRight absolute bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 top-0 right-0"
+          role="alert"
+        >
           <p className="font-bold">Error</p>
           <p>{messageErr}</p>
         </div>
-      }
+      )}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -58,7 +74,10 @@ const FormLoginAdmin = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
                 Username
               </label>
               <div className="mt-2">
@@ -76,11 +95,17 @@ const FormLoginAdmin = () => {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <a
+                    href="#"
+                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  >
                     Forgot password?
                   </a>
                 </div>
@@ -111,8 +136,7 @@ const FormLoginAdmin = () => {
         </div>
       </div>
     </>
-      
-    )
-}
+  );
+};
 
 module.exports = FormLoginAdmin;
