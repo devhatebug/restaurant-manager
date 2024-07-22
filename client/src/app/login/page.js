@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import getAllUsers from "@/utils/getAllUser"
 import {jwtDecode} from "jwt-decode";
 const LoginPage = () => {
   const router = useRouter();
@@ -11,20 +10,6 @@ const LoginPage = () => {
   const [password, setPassWord] = useState();
   const [messageErr, setMessageErr] = useState();
   const [notiErr, setNotiErr] = useState();
-  const [dataUsers, setDataUsers] = useState([]);
-  const getUsers = async () => {
-    try{
-      const users = await getAllUsers();
-      setDataUsers(users)
-      console.table(users)
-    }
-    catch(err) {
-      console.log(err)
-    }
-  }
-  useEffect(() => {
-    getUsers()
-  },[]);
   const selectUsername = (e) => {
     setUserName(e.target.value);
     setNotiErr(false);
