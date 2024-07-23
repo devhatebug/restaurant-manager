@@ -1,12 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { fileToBase64 } from "@/utils/toBase64";
 import getAllUsers from "@/utils/getAllUser";
 import { useRouter } from "next/navigation";
 const SignUpPage = () => {
   const router = useRouter();
-  const [code, setCode] = useState();
+  const [dataUsers, setDataUsers] = useState([]);
+  const [code, setCode] = useState('abcsss');
   const [img, setImg] = useState();
   const [file, setFile] = useState();
   const [name, setName] = useState();
@@ -17,10 +18,11 @@ const SignUpPage = () => {
   const role = "user";
   const [isReady, setIsReady] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
+  const [notiDupicate, setNotiDuplicate] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const closePopup = () => {
     setIsSuccess(false);
-  }
+  };
   const handleFileImg = (e) => {
     fileToBase64(e.target.files[0], setImg);
     setFile(e.target.files[0]);
@@ -35,6 +37,26 @@ const SignUpPage = () => {
     phone: phone,
     role: role,
   };
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const dataUsers = await getAllUsers();
+        setDataUsers(dataUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    getUser();
+  }, []);
+  useEffect(() => {
+    const foundUser = dataUsers.find((users) => users.username === username);
+    if (foundUser !== undefined && username !== "") {
+      setNotiDuplicate(true);
+    } else {
+      setNotiDuplicate(false);
+    }
+  });
   const registerUser = async () => {
     const isValid = [
       img,
@@ -50,7 +72,7 @@ const SignUpPage = () => {
     if (file && file.size > maxSizeImg) {
       setIsWarning(true);
     }
-    if (isValid && notiDupicate === false && img.size <= maxSizeImg) {
+    if (isValid && notiDupicate === false && file.size <= maxSizeImg) {
       try {
         await axios.post("http://127.0.0.1:8080/api-users/add-users", newData);
         setIsReady(false);
@@ -177,6 +199,27 @@ const SignUpPage = () => {
                 <div>
                   <span className="font-medium">Cảnh báo lỗi!</span> Kích thước
                   ảnh không vượt quá 2mb
+                </div>
+              </div>
+            )}
+            {notiDupicate && (
+              <div
+                className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
+                role="alert"
+              >
+                <svg
+                  className="flex-shrink-0 inline w-4 h-4 me-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <span className="sr-only">Info</span>
+                <div>
+                  <span className="font-medium">Cảnh báo lỗi!</span> Tên người
+                  dùng đã được sử dụng
                 </div>
               </div>
             )}
