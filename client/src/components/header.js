@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 const Navbar = () => {
+  const router = useRouter();
   const [isLogIn, setIsLogIn] = useState(false);
   useEffect(() => {
     const token = Cookies.get("tokenUser");
@@ -49,7 +51,7 @@ const Navbar = () => {
               <span className="font-bold text-lg">8 Items</span>
               <span className="text-info">Subtotal: $999</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">View cart</button>
+                <button onClick={() => {router.push("/cart")}} className="btn btn-primary btn-block">Xem giỏ hàng</button>
               </div>
             </div>
           </div>

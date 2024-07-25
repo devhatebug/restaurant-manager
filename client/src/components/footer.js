@@ -1,9 +1,7 @@
 import React from "react";
-import clsx from "clsx";
-
 const Footer = () => {
   return (
-    <footer className="footer footer-center p-10 bg-base-200 text-base-content rounded">
+    <footer className="footer footer-center p-10 bg-blue-500 text-base-content text-white rounded">
       <nav className="grid grid-flow-col gap-4">
         <a className="link link-hover">About us</a>
         <a className="link link-hover">Contact</a>
