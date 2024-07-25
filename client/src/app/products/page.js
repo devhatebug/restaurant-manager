@@ -4,32 +4,47 @@ import axios from "axios";
 import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
 import Navbar from "@/components/header";
-
+import Footer from "@/components/footer";
+import Pagination from "@/components/pagination";
 const ProductsPage = () => {
-  const URL_API = `http://127.0.0.1:8080/api-menu/menu`;
   const [products, setProducts] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
   const [valueFilter, setValueFilter] = useState("null");
   const [valueSearch, setValueSearch] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchedProducts, setSearchedProducts] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lenghtPage, setLenghtPage] = useState();
+  const limit = 4;
+  const offset = (currentPage - 1) * limit;
+  const URL_API = `http://127.0.0.1:8080/api-menu/products?offset=${offset}&limit=${limit}`;
   useEffect(() => {
     const getAllProducts = async () => {
+      try {
+        const res = await axios.get(`http://127.0.0.1:8080/api-menu/menu`);
+        setIsLoad(false);
+        const lenght = res.data.length;
+        setLenghtPage(Math.ceil(lenght / limit));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getAllProducts();
+  }, [isLoad]);
+  useEffect(() => {
+    const getProductsPagi = async () => {
       setIsLoad(true);
       try {
         const res = await axios.get(URL_API);
         setProducts(res.data);
         setFilteredProducts(res.data);
         setSearchedProducts(res.data);
-        setIsLoad(false);
       } catch (err) {
         console.log(err);
       }
     };
-    getAllProducts();
-  }, []);
-
+    getProductsPagi();
+  }, [isLoad, currentPage, limit]);
   const filterProducts = () => {
     if (valueFilter !== "null") {
       setFilteredProducts(
@@ -230,6 +245,19 @@ const ProductsPage = () => {
           </ul>
         </div>
       </div>
+      <div className="flex justify-center mt-[50px]">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          lengthPagination={lenghtPage}
+        />
+      </div>
+      <Footer />
+      {isLoad && (<div className="bg-white relative">
+        <div className="fixed top-0 right-0 h-screen w-screen z-50 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      </div>)}
     </>
   );
 };

@@ -8,7 +8,6 @@ const Navbar = () => {
   const [isLogIn, setIsLogIn] = useState(false);
   useEffect(() => {
     const token = Cookies.get("tokenUser");
-    console.log(token);
     if (token !== null || token !== undefined || token !== "") {
       setIsLogIn(true);
     } else {

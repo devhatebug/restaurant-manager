@@ -7,7 +7,7 @@ import Footer from "@/components/footer";
 
 const HomePage = () => {
   return (
-    <div className="w-[100%]">
+    <div className="w-[100%] h-auto">
       <Navbar />
       <div className="">
         <Carousel />

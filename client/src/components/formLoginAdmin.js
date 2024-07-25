@@ -2,56 +2,56 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 const FormLoginAdmin = () => {
-   const router = useRouter();
-   const [username, setUserName] = useState("");
-   const [password, setPassWord] = useState("");
-   const [notiErr, setNotiErr] = useState(false);
-   const [messageErr, setMessageErr] = useState("");
+  const router = useRouter();
+  const [username, setUserName] = useState("");
+  const [password, setPassWord] = useState("");
+  const [notiErr, setNotiErr] = useState(false);
+  const [messageErr, setMessageErr] = useState("");
 
-   const getUserName = (e) => {
-     setUserName(e.target.value);
-     setNotiErr(false);
-   };
+  const getUserName = (e) => {
+    setUserName(e.target.value);
+    setNotiErr(false);
+  };
 
-   const getPassWord = (e) => {
-     setPassWord(e.target.value);
-     setNotiErr(false);
-   };
+  const getPassWord = (e) => {
+    setPassWord(e.target.value);
+    setNotiErr(false);
+  };
 
-   const handleLogin = async () => {
-     try {
-       const response = await axios.post(
-         "http://127.0.0.1:8080/api/auth/login",
-         {
-           username: username,
-           password: password,
-         }
-       );
-       const { token } = response.data;
-       try {
-         const decodedToken = jwtDecode(token);
-         console.log(decodedToken.roleUser)
-         if (decodedToken.roleUser === "admin") {
-           Cookies.set("tokenAdmin", token);
-           router.push("/admin");
-         } else {
-           setMessageErr("Tài khoản này không phải là tài khoản admin");
-           setNotiErr(true);
-         }
-       } catch (decodeError) {
-         setMessageErr("Invalid token received");
-         setNotiErr(true);
-       }
-     } catch (error) {
-       const errorMessage =
-         error.response?.data?.message || "An unexpected error occurred";
-       setMessageErr(errorMessage);
-       setNotiErr(true);
-     }
-   };
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8080/api/auth/login",
+        {
+          username: username,
+          password: password,
+        }
+      );
+      const { token } = response.data;
+      try {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.roleUser == "admin") {
+          var test = Cookies.set("tokenAdmin", token, { expires: 7 });
+          router.push("/admin");
+        } else {
+          setMessageErr("Tài khoản này không phải là tài khoản admin");
+          setNotiErr(true);
+        }
+      } catch (decodeError) {
+        setMessageErr("Invalid token received");
+        console.error(decodeError)
+        setNotiErr(true);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred";
+      setMessageErr(errorMessage);
+      setNotiErr(true);
+    }
+  };
 
   return (
     <>
