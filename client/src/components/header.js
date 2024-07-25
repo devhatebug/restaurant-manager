@@ -1,10 +1,24 @@
-import React from "react";
-
+"use client";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 const Navbar = () => {
+  const [isLogIn, setIsLogIn] = useState(false);
+  useEffect(() => {
+    const token = Cookies.get("tokenUser");
+    console.log(token);
+    if (token !== null || token !== undefined || token !== "") {
+      setIsLogIn(true);
+    } else {
+      setIsLogIn(false);
+    }
+  }, []);
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <a className="btn btn-ghost text-xl" href="/">
+          Dev Restaurant
+        </a>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
@@ -40,37 +54,45 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
+        {/* profile */}
+        {!isLogIn && (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                />
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <a className="justify-between">
+                  Profile
+                  <span className="badge">New</span>
+                </a>
+              </li>
+              <li>
+                <a>Settings</a>
+              </li>
+              <li>
+                <a>Logout</a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
-        </div>
+        )}
+        {isLogIn && (
+          <div className="text-sm font-medium p-[5px]">
+            <a href="/login">Đăng nhập</a>
+          </div>
+        )}
       </div>
     </div>
   );

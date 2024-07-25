@@ -9,7 +9,7 @@ import SiderBarAdminPage from '@/components/siderbarAdminPage';
 const AdminPage = () => {
     const router = useRouter();
     useEffect(() => {
-        const token = Cookies.get('token');
+        const token = Cookies.get('tokenAdmin');
         if(!token) {
             router.push('/admin/login')
         }

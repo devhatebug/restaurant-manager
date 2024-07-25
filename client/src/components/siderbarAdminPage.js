@@ -3,29 +3,25 @@ import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const SiderBarAdminPage = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+ const router = useRouter();
+ const pathname = usePathname();
+ const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+ const [isFollow, setIsFollow] = useState(true);
+ if (pathname === "/admin/login") {
+   return null;
+ }
 
-  // Không render sidebar nếu là trang login
-  if (pathname === "/admin/login") {
-    return null;
-  }
+ const toggleFollow = () => {
+   setIsFollow(!isFollow);
+ };
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isFollow, setIsFollow] = useState(true);
+ const openSidebar = () => {
+   setIsSidebarOpen(true);
+ };
 
-  const toggleFollow = () => {
-    setIsFollow(!isFollow);
-  };
-
-  const openSidebar = () => {
-    setIsSidebarOpen(true);
-  };
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
-
+ const closeSidebar = () => {
+   setIsSidebarOpen(false);
+ };
   return (
     <>
       <button
