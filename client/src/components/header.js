@@ -1,46 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import React, { useEffect} from "react";
 import { useRouter } from "next/navigation";
-import getAllUsers from "@/utils/getAllUser";
+import fetchUser from "@/utils/fetchUser";
+import getAuth from "@/utils/getAuthor";
 const Navbar = () => {
   const router = useRouter();
-  const [isLogIn, setIsLogIn] = useState(false);
-  const [username, setUserName] = useState("");
-  const [allUsers, setAllUsers] = useState([]);
-  const [dataUserLog, setDataUserLog] = useState();
+  const { dataUserLog, setUserId } = fetchUser();
+  const { isLogIn, userId } = getAuth();
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const users = await getAllUsers();
-        setAllUsers(users);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-      }
-    };
-    fetchUsers();
-  }, []);
-  useEffect(() => {
-    const token = Cookies.get("tokenUser");
-    if (token) {
-      setIsLogIn(true);
-      try {
-        const decodedToken = jwtDecode(token);
-        setUserName(decodedToken.username);
-      } catch (error) {
-        console.error("Failed to decode token:", error);
-        setIsLogIn(false);
-      }
-    } else {
-      setIsLogIn(false);
+    if (isLogIn) {
+      setUserId(userId);
     }
-  }, []);
-  useEffect(() => {
-    const founded = allUsers.find((users) => users.username === username);
-    setDataUserLog(founded);
-    console.table(dataUserLog)
-  }, [username, allUsers])
+  }, [isLogIn, userId, setUserId]);
+  const nameAuthor = dataUserLog?.nameUser;
+  const lengthCart = dataUserLog?.cart?.length;
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="flex-1">
@@ -66,7 +39,7 @@ const Navbar = () => {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              <span className="badge badge-sm indicator-item">8</span>
+              <span className="badge badge-sm indicator-item">{dataUserLog?.cart === null ? "0" : lengthCart}</span>
             </div>
           </div>
           <div
@@ -93,7 +66,7 @@ const Navbar = () => {
         {isLogIn && (
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="mx-[10px]">
-              <div className="w-auto font-medium underline">{dataUserLog.nameUser}</div>
+              <div className="w-auto font-medium underline">{nameAuthor}</div>
             </div>
             <ul
               tabIndex={0}

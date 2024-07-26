@@ -32,7 +32,7 @@ const addUser = (req, res) => {
 }
 
 const editUser = (req, res) => {
-    const {codeUser, name, avt, username, pass, address, phone, role, idUser} = req.body;
+    const {codeUser, name, avt, username, pass, address, phone, role, idUser, cart} = req.body;
     const dataUpdateUser = {
         codeUser: codeUser,
         nameUser: name,
@@ -42,6 +42,7 @@ const editUser = (req, res) => {
         address: address,
         phone: phone,
         roleUser: role,
+        cart: cart
     }
     updateData(req, res, Users, dataUpdateUser, idUser)
 }

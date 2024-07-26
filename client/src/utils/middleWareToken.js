@@ -1,13 +1,10 @@
-import React, { useState } from "react";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
 const middleWareToken = () => {
-  const [isToken, setIsToken] = useState(false);
-  const { token } = Cookies.get("tokenUser");
+  const token = Cookies.get("tokenUser");
   if (token) {
-    setIsToken(true);
+    return true;
   } else {
-    setIsToken(false);
+    return false;
   }
 };
 

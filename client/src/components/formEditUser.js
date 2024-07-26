@@ -28,6 +28,7 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
         phone: dataPhone === "" ? data.phone : dataPhone,
         role: dataRole === "" ? data.roleUser : dataRole,
         idUser: data.id,
+        cart: data.cart
     };
 
     if(dataImg) { 

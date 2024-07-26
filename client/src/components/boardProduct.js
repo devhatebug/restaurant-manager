@@ -4,7 +4,8 @@ import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
 import ProductQuickViews from "./productQuickViews";
 import { useRouter } from "next/navigation";
-
+import fetchUser from "@/utils/fetchUser";
+import getAuth from "@/utils/getAuthor";
 const BoardProducts = () => {
   const router = useRouter();
   const URL_API = `http://127.0.0.1:8080/api-menu/menu`;
@@ -15,14 +16,16 @@ const BoardProducts = () => {
   const [proSell, setProSell] = useState([]);
   const [idSelect, setIdSelect] = useState();
   const [isProView, setIsProView] = useState(false);
+  const [idAdd, setIdAdd] = useState();
   const [proSelected, setProSelected] = useState([]);
+  const [proAddToCard, setProAddToCard] = useState([]);
   const [quaEndow, setQuaEndow] = useState(4);
   const [quaNew, setQuaNew] = useState(4);
   const [quaSell, setQuaSell] = useState(4);
   const [disableEndow, setDisableEndow] = useState(false);
   const [disableNew, setDisableNew] = useState(false);
   const [disableSell, setDisableSell] = useState(false);
-
+  const [newAuth, setNewAuth] = useState({});
   useEffect(() => {
     const getAllProducts = async () => {
       setIsLoading(true);
@@ -98,6 +101,56 @@ const BoardProducts = () => {
     };
     getProductSelect();
   }, [idSelect]);
+  // function Add To Cart
+  const { dataUserLog, setUserId } = fetchUser();
+  const { isLogIn, userId } = getAuth();
+  useEffect(() => {
+    if (isLogIn) {
+      setUserId(userId);
+    }
+  }, [isLogIn, userId, setUserId]);
+  const dataAuthor = {
+    idUser: dataUserLog?.id,
+    codeUser: dataUserLog?.codeUser,
+    name: dataUserLog?.nameUser,
+    username: dataUserLog?.username,
+    pass: dataUserLog?.pass,
+    address: dataUserLog?.address,
+    phone: dataUserLog?.phone,
+    role: dataUserLog?.roleUser,
+    avt: dataUserLog?.avtUser,
+    cart: dataUserLog?.cart,
+  };
+  useEffect(() => {
+    const selectPro = async () => {
+      try {
+        const proSelect = await axios.get(`${URL_API}/${idAdd}`);
+        setProAddToCard(proSelect.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    selectPro();
+  }, [idAdd]);
+  const addToCart = async (e) => {
+    setIdAdd(e.target.value);
+    if (isLogIn) {
+      if (proAddToCard) {
+        setNewAuth({ ...dataAuthor, cart: proAddToCard });
+      }
+      try {
+        const res = await axios.put(
+          `http://127.0.0.1:8080/api-users/update-user/`,
+          newAuth
+        );
+        alert("thanh cong");
+      } catch (err) {
+        alert("Error : ", err);
+      }
+    } else {
+      alert("dang nhap");
+    }
+  };
   return (
     <div className="flex flex-col my-[30px] px-[20px]">
       <div className="category my-[20px] flex flex-col items-center mb-[50px]">
@@ -157,8 +210,12 @@ const BoardProducts = () => {
                           VND
                         </span>
                       </div>
-                      <button className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <div className="mr-[5px]">Add to card</div>
+                      <button
+                        value={dt.id}
+                        onClick={addToCart}
+                        className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      >
+                        <div className="mr-[5px]">Add To Cart</div>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-[18px] h-[18px]"
@@ -254,8 +311,12 @@ const BoardProducts = () => {
                           VND
                         </span>
                       </div>
-                      <button className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <div className="mr-[5px]">Add to card</div>
+                      <button
+                        value={dt.id}
+                        onClick={addToCart}
+                        className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      >
+                        <div className="mr-[5px]">Add To Cart</div>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-[18px] h-[18px]"
@@ -351,8 +412,12 @@ const BoardProducts = () => {
                           VND
                         </span>
                       </div>
-                      <button className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <div className="mr-[5px]">Add to card</div>
+                      <button
+                        value={dt.id}
+                        onClick={addToCart}
+                        className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      >
+                        <div className="mr-[5px]">Add To Cart</div>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-[18px] h-[18px]"
@@ -404,7 +469,10 @@ const BoardProducts = () => {
           </div>
         </div>
       )}
-      <button onClick={() => router.push('/products')} className="w-[230px] btn btn-neutral m-auto ">
+      <button
+        onClick={() => router.push("/products")}
+        className="w-[230px] btn btn-neutral m-auto "
+      >
         Xem tất cả các sản phẩm
       </button>
     </div>
