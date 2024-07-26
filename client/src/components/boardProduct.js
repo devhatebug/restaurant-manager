@@ -3,8 +3,10 @@ import axios from "axios";
 import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
 import ProductQuickViews from "./productQuickViews";
+import { useRouter } from "next/navigation";
 
 const BoardProducts = () => {
+  const router = useRouter();
   const URL_API = `http://127.0.0.1:8080/api-menu/menu`;
   const [dataProducts, setDataProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -402,8 +404,8 @@ const BoardProducts = () => {
           </div>
         </div>
       )}
-      <button className="w-[230px] btn btn-neutral m-auto ">
-        <a href="/products">Xem tất cả các sản phẩm</a>
+      <button onClick={() => router.push('/products')} className="w-[230px] btn btn-neutral m-auto ">
+        Xem tất cả các sản phẩm
       </button>
     </div>
   );

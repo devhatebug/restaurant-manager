@@ -6,7 +6,6 @@ const createToken = (user) => {
       id: user.id,
       username: user.username,
       roleUser: user.roleUser,
-      cart: user.cart,
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }

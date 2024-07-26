@@ -3,17 +3,44 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import getAllUsers from "@/utils/getAllUser";
 const Navbar = () => {
   const router = useRouter();
   const [isLogIn, setIsLogIn] = useState(false);
+  const [username, setUserName] = useState("");
+  const [allUsers, setAllUsers] = useState([]);
+  const [dataUserLog, setDataUserLog] = useState();
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = await getAllUsers();
+        setAllUsers(users);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+    fetchUsers();
+  }, []);
   useEffect(() => {
     const token = Cookies.get("tokenUser");
-    if (token !== null || token !== undefined || token !== "") {
+    if (token) {
       setIsLogIn(true);
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserName(decodedToken.username);
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        setIsLogIn(false);
+      }
     } else {
       setIsLogIn(false);
     }
   }, []);
+  useEffect(() => {
+    const founded = allUsers.find((users) => users.username === username);
+    setDataUserLog(founded);
+    console.table(dataUserLog)
+  }, [username, allUsers])
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="flex-1">
@@ -50,25 +77,23 @@ const Navbar = () => {
               <span className="font-bold text-lg">8 Items</span>
               <span className="text-info">Subtotal: $999</span>
               <div className="card-actions">
-                <button onClick={() => {router.push("/cart")}} className="btn btn-primary btn-block">Xem giỏ hàng</button>
+                <button
+                  onClick={() => {
+                    router.push("/cart");
+                  }}
+                  className="btn btn-primary btn-block"
+                >
+                  Xem giỏ hàng
+                </button>
               </div>
             </div>
           </div>
         </div>
         {/* profile */}
-        {!isLogIn && (
+        {isLogIn && (
           <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                />
-              </div>
+            <div tabIndex={0} role="button" className="mx-[10px]">
+              <div className="w-auto font-medium underline">{dataUserLog.nameUser}</div>
             </div>
             <ul
               tabIndex={0}
@@ -89,7 +114,7 @@ const Navbar = () => {
             </ul>
           </div>
         )}
-        {isLogIn && (
+        {!isLogIn && (
           <div className="text-sm font-medium p-[5px]">
             <a href="/login">Đăng nhập</a>
           </div>
