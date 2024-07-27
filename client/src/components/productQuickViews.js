@@ -6,7 +6,6 @@ import ReactStars from "react-stars";
 
 const ProductQuickViews = ({ proSelected, onClose }) => {
   const data = proSelected[0];
-  const [isCmt, setIsCmt] = useState(false);
   const [rating, setRating] = useState(0);
   const handleRating = (rate) => {
     setRating(rate);
@@ -172,42 +171,6 @@ const ProductQuickViews = ({ proSelected, onClose }) => {
               >
                 Đặt hàng
               </button>
-            </section>
-            <section className="mt-[-40px] ml-[-15px]">
-              <section className="bg-white py-8 lg:py-16 antialiased">
-                <div className="max-w-2xl mx-auto px-4">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-lg lg:text-2xl font-bold text-gray-900">
-                      Đánh giá
-                    </h2>
-                  </div>
-                  <div className="rating my-[15px] flex items-center">
-                    <ReactStars
-                      count={5}
-                      size={30}
-                      color2={"#FDBF12"}
-                      onChange={handleRating}
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                      <label htmlFor="comment" className="sr-only">
-                        Your comment
-                      </label>
-                      <textarea
-                        id="comment"
-                        rows="3"
-                        className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                        placeholder="Viết nhận xét ..."
-                        required
-                      ></textarea>
-                    </div>
-                    <button className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800 bg-gray-700">
-                      Post
-                    </button>
-                  </div>
-                </div>
-              </section>
             </section>
           </div>
         </div>
