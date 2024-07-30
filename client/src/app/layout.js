@@ -1,6 +1,6 @@
-// app/default-layout.tsx
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/context/cartContext"; // Import CartProvider
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,7 +13,7 @@ export default function DefaultLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

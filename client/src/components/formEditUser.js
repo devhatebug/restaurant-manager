@@ -28,7 +28,7 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
         phone: dataPhone === "" ? data.phone : dataPhone,
         role: dataRole === "" ? data.roleUser : dataRole,
         idUser: data.id,
-        cart: data.cart
+        cart: []
     };
 
     if(dataImg) { 
@@ -46,7 +46,7 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
         if (checkValue !== undefined) {
             setIsWarning(true)
         } 
-        if(dataImg.size > maxSizeImg) {
+        if(dataImg?.size > maxSizeImg) {
             setIsImg(true);
         }
         else {

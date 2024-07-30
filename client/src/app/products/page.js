@@ -1,12 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
 import Navbar from "@/components/header";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
+import { CartProvider } from "@/context/cartContext";
+import actionAddToCart from "@/utils/addToCart";
+import LoadingPopup from "@/components/loadingPopup";
+import SuccessPopup from "@/components/successPopup";
+import LoginPopup from "@/components/loginPopup";
 const ProductsPage = () => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
   const [valueFilter, setValueFilter] = useState("null");
@@ -76,11 +83,21 @@ const ProductsPage = () => {
     searchProducts();
   }, [valueSearch, filteredProducts]);
 
+  const { cart, loadActAdd, success, log, addToCart, setLog } =
+    actionAddToCart();
+  const handleAddToCart = (e) => {
+    const idAdd = e.target.value;
+    addToCart(idAdd);
+  };
+
   return (
     <>
       <div>
         <Navbar />
       </div>
+      {loadActAdd && <LoadingPopup />}
+      {success && <SuccessPopup />}
+      {log && <LoginPopup setLog={setLog} router={router} />}
       <div className="products-page flex flex-col items-center">
         <div className="navbar flex items-center justify-center flex-wrap mt-[10px]">
           <div className="flex items-center mx-[10px] my-[10px]">
@@ -214,8 +231,11 @@ const ProductsPage = () => {
                           VND
                         </span>
                       </div>
-                      <button className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <div className="mr-[5px]">Add to card</div>
+                      <button
+                        onClick={handleAddToCart}
+                        className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      >
+                        Add to card
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-[18px] h-[18px]"
@@ -253,11 +273,9 @@ const ProductsPage = () => {
         />
       </div>
       <Footer />
-      {isLoad && (<div className="bg-white relative">
-        <div className="fixed top-0 right-0 h-screen w-screen z-50 flex justify-center items-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-        </div>
-      </div>)}
+      {isLoad && (
+        <LoadingPopup />
+      )}
     </>
   );
 };

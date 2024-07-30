@@ -1933,19 +1933,6 @@ input:checked + .toggle-bg {
 .range:focus {
   outline: none;
 }
-.rating {
-  position: relative;
-  display: inline-flex;
-}
-.rating :where(input) {
-  cursor: pointer;
-  border-radius: 0px;
-  animation: rating-pop var(--animation-input, 0.25s) ease-out;
-  height: 1.5rem;
-  width: 1.5rem;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
-  --tw-bg-opacity: 1;
-}
 .select {
   display: inline-flex;
   cursor: pointer;
@@ -2837,32 +2824,6 @@ details.collapse summary::-webkit-details-marker {
       var(--focus-shadow, 0 0),
       calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size);
 }
-.rating input {
-  appearance: none;
-  -webkit-appearance: none;
-}
-.rating .rating-hidden {
-  width: 0.5rem;
-  background-color: transparent;
-}
-.rating input[type="radio"]:checked {
-  background-image: none;
-}
-.rating input:checked ~ input,
-  .rating input[aria-checked="true"] ~ input {
-  --tw-bg-opacity: 0.2;
-}
-.rating input:focus-visible {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  transition-duration: 300ms;
-  transform: translateY(-0.125em);
-}
-.rating input:active:focus {
-  animation: none;
-  transform: translateY(-0.125em);
-}
 @keyframes rating-pop {
 
   0% {
@@ -3624,6 +3585,12 @@ details.collapse summary::-webkit-details-marker {
 .right-0 {
   right: 0px;
 }
+.right-2 {
+  right: 0.5rem;
+}
+.right-2\.5 {
+  right: 0.625rem;
+}
 .right-4 {
   right: 1rem;
 }
@@ -3909,6 +3876,9 @@ details.collapse summary::-webkit-details-marker {
 .h-2\.5 {
   height: 0.625rem;
 }
+.h-20 {
+  height: 5rem;
+}
 .h-24 {
   height: 6rem;
 }
@@ -3941,6 +3911,9 @@ details.collapse summary::-webkit-details-marker {
 }
 .h-\[100px\] {
   height: 100px;
+}
+.h-\[150px\] {
+  height: 150px;
 }
 .h-\[18px\] {
   height: 18px;
@@ -3993,6 +3966,9 @@ details.collapse summary::-webkit-details-marker {
 .w-2\.5 {
   width: 0.625rem;
 }
+.w-20 {
+  width: 5rem;
+}
 .w-24 {
   width: 6rem;
 }
@@ -4025,6 +4001,9 @@ details.collapse summary::-webkit-details-marker {
 }
 .w-\[100\%\] {
   width: 100%;
+}
+.w-\[150px\] {
+  width: 150px;
 }
 .w-\[18px\] {
   width: 18px;
@@ -4145,6 +4124,16 @@ details.collapse summary::-webkit-details-marker {
 }
 .animate-openingPopup {
   animation: openingPopup 0.2s linear forwards;
+}
+@keyframes ping {
+
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 @keyframes slideInBottom {
 
@@ -4308,6 +4297,9 @@ details.collapse summary::-webkit-details-marker {
 }
 .overflow-y-auto {
   overflow-y: auto;
+}
+.overflow-x-hidden {
+  overflow-x: hidden;
 }
 .whitespace-nowrap {
   white-space: nowrap;
@@ -4541,6 +4533,10 @@ details.collapse summary::-webkit-details-marker {
 }
 .bg-transparent {
   background-color: transparent;
+}
+.bg-violet-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(91 33 182 / var(--tw-bg-opacity));
 }
 .bg-white {
   --tw-bg-opacity: 1;
@@ -5413,6 +5409,11 @@ html::-webkit-scrollbar-thumb {
 .dark\:text-blue-500:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(63 131 248 / var(--tw-text-opacity));
+}
+
+.dark\:text-gray-200:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity));
 }
 
 .dark\:text-gray-400:is(.dark *) {
