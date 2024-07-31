@@ -10,13 +10,14 @@ const orders = connection.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    nameOrder: { type: DataTypes.STRING, allowNull: false },
-    inforOrder: { type: DataTypes.JSON, allowNull: false },
-    price: { type: DataTypes.INTEGER, allowNull: false },
-    statusOrder: { type: DataTypes.STRING, allowNull: false },
-    formOrder: { type: DataTypes.STRING, allowNull: false },
-    dispatch: { type: DataTypes.STRING, allowNull: false },
+    nameOrder: { type: DataTypes.STRING},
+    inforOrder: { type: DataTypes.JSON},
+    price: { type: DataTypes.INTEGER},
+    statusOrder: { type: DataTypes.STRING},
+    dispatch: { type: DataTypes.STRING},
     noteOrder: { type: DataTypes.STRING },
+    nameClient: {type:DataTypes.STRING},
+    phoneClient: {type: DataTypes.STRING}
   },
   { tableName: "orders", timestamps: false }
 );

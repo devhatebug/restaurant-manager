@@ -34,7 +34,7 @@ const FormLoginAdmin = () => {
       try {
         const decodedToken = jwtDecode(token);
         if (decodedToken.roleUser == "admin") {
-          var test = Cookies.set("tokenAdmin", token, { expires: 7 });
+          Cookies.set("tokenAdmin", token, { expires: 7 });
           router.push("/admin");
         } else {
           setMessageErr("Tài khoản này không phải là tài khoản admin");

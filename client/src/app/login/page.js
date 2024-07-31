@@ -27,7 +27,7 @@ const LoginPage = () => {
       const { token } = res.data;
       const decodeToken = jwtDecode(token);
       if(decodeToken.roleUser !== "admin") {
-        Cookies.set("tokenUser", token);
+        Cookies.set("tokenUser", token, {expires:7});
         router.push("/");
       }
       else {

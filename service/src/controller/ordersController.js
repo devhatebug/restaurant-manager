@@ -6,15 +6,16 @@ const getAllOrders = (req, res) => {
 }
 
 const addOrder = (req, res) => {
-    const {name, infor, price, status, formOrder, dispatch, note} = req.body;
+    const {name, infor, price, status, formOrder, dispatch, note, nameClient, phoneClient} = req.body;
     const dataNewOrder = {
       nameOrder: name,
       inforOrder: infor,
       price: price,
       statusOrder: status,
-      formOrder: formOrder,
       dispatch: dispatch,
       noteOrder: note,
+      nameClient: nameClient,
+      phoneClient: phoneClient,
     };
     addData(req, res, orders, dataNewOrder);
 }
