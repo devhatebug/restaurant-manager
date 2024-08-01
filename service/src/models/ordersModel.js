@@ -11,7 +11,7 @@ const orders = connection.define(
       autoIncrement: true,
     },
     nameOrder: { type: DataTypes.STRING},
-    inforOrder: { type: DataTypes.JSON},
+    img: { type: DataTypes.BLOB},
     price: { type: DataTypes.INTEGER},
     statusOrder: { type: DataTypes.STRING},
     dispatch: { type: DataTypes.STRING},

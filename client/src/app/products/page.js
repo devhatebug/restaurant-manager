@@ -12,8 +12,12 @@ import actionAddToCart from "@/utils/addToCart";
 import LoadingPopup from "@/components/loadingPopup";
 import SuccessPopup from "@/components/successPopup";
 import LoginPopup from "@/components/loginPopup";
+import FormOrder from "@/components/formOrder";
+import AlertLogin from "@/components/alertLogin";
+import getAuth from "@/utils/getAuthor";
 const ProductsPage = () => {
   const router = useRouter();
+  const { isLogIn, userId, setUserId } = getAuth();
   const [products, setProducts] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
   const [valueFilter, setValueFilter] = useState("null");
@@ -221,42 +225,23 @@ const ProductsPage = () => {
                         3
                       </span>
                     </div>
-                    <div className="flex items-center justify-between flex-wrap">
-                      <div className="flex flex-col">
-                        <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
-                          {formatPrice(dt.price)} VND
-                        </span>
-                        <span className="text-lg font-medium">
-                          {formatPrice(dt.price - (dt.price * dt.endow) / 100)}{" "}
-                          VND
-                        </span>
-                      </div>
+                    <div className="flex flex-col">
+                      <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
+                        {formatPrice(dt.price)} VND
+                      </span>
+                      <span className="text-lg font-medium">
+                        {formatPrice(dt.price - (dt.price * dt.endow) / 100)}{" "}
+                        VND
+                      </span>
+                    </div>
+                    <div className="flex items-center flex-wrap">
                       <button
                         onClick={handleAddToCart}
                         className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                       >
-                        Add to card
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-[18px] h-[18px]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
+                        Thêm vào giỏ hàng
                       </button>
-                      <button
-                        type="button"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
-                      >
-                        Order
-                      </button>
+                      {!isLogIn ? <AlertLogin /> : <FormOrder idPro={dt?.id} />}
                     </div>
                   </div>
                 </div>
@@ -273,9 +258,7 @@ const ProductsPage = () => {
         />
       </div>
       <Footer />
-      {isLoad && (
-        <LoadingPopup />
-      )}
+      {isLoad && <LoadingPopup />}
     </>
   );
 };

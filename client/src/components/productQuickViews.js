@@ -163,7 +163,7 @@ const ProductQuickViews = ({ proSelected, onClose }) => {
                 >
                   Thêm vào giỏ hàng
                 </button>
-                {!isLogIn ? <AlertLogin /> : <FormOrder />}
+                {!isLogIn ? <AlertLogin /> : <FormOrder idPro={data?.id} />}
               </section>
             </div>
           </div>
