@@ -3840,6 +3840,9 @@ details.collapse summary::-webkit-details-marker {
 .mt-\[50px\] {
   margin-top: 50px;
 }
+.mb-\[-10px\] {
+  margin-bottom: -10px;
+}
 .block {
   display: block;
 }

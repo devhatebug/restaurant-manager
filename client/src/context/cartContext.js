@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import getAuth from "@/utils/getAuthor";
 import fetchUser from "@/utils/fetchUser";
@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
       setUserId(userId);
       setCart(dataUserLog?.cart || []);
       const length = dataUserLog?.cart?.length;
-      if(length) {
+      if (length) {
         setCartLength(length);
       }
     }

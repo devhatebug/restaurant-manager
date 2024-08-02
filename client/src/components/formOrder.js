@@ -45,7 +45,7 @@ const FormOrder = ({ idPro }) => {
         name: dataPro[0]?.nameItem,
         img: dataPro[0]?.imgItem,
         price: dataPro[0]?.price - (dataPro[0]?.price * dataPro[0]?.endow) / 100,
-        status: "đơn mới",
+        status: "new order",
         dispatch: dispatch ? dispatch : dataUserLog?.address,
         note: note ? note : "",
         nameClient: nameClient ? nameClient : dataUserLog?.nameUser,
