@@ -7,7 +7,6 @@ import formatPrice from "@/utils/formatPrice";
 import Navbar from "@/components/header";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
-import { CartProvider } from "@/context/cartContext";
 import actionAddToCart from "@/utils/addToCart";
 import LoadingPopup from "@/components/loadingPopup";
 import SuccessPopup from "@/components/successPopup";
@@ -93,7 +92,7 @@ const ProductsPage = () => {
     const idAdd = e.target.value;
     addToCart(idAdd);
   };
-
+  
   return (
     <>
       <div>
@@ -237,6 +236,7 @@ const ProductsPage = () => {
                     <div className="flex items-center flex-wrap">
                       <button
                         onClick={handleAddToCart}
+                        value={dt.id}
                         className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                       >
                         Thêm vào giỏ hàng

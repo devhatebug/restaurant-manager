@@ -12,7 +12,7 @@ const getAllOrders = (req, res) => {
 };
 
 const addOrder = (req, res) => {
-  const { name, img, price, status, dispatch, note, nameClient, phoneClient } =
+  const { name, img, price, status, dispatch, note, nameClient, phoneClient, quantity } =
     req.body;
   const dataNewOrder = {
     nameOrder: name,
@@ -23,6 +23,7 @@ const addOrder = (req, res) => {
     noteOrder: note,
     nameClient: nameClient,
     phoneClient: phoneClient,
+    quantity: quantity,
   };
   addData(req, res, orders, dataNewOrder);
 };
@@ -43,6 +44,7 @@ const updateOrder = (req, res) => {
     note,
     nameClient,
     phoneClient,
+    quantity,
     img,
     idItem,
   } = req.body;
@@ -55,6 +57,7 @@ const updateOrder = (req, res) => {
     nameClient: nameClient,
     phoneClient: phoneClient,
     img: img,
+    quantity: quantity,
   };
   updateData(req, res, orders, dataUpdate, idItem);
 };

@@ -19,7 +19,6 @@ export const CartProvider = ({ children }) => {
       }
     }
   }, [isLogIn, userId, setUserId, dataUserLog]);
-
   return (
     <CartContext.Provider value={{ cart, setCart, cartLength, setCartLength }}>
       {children}

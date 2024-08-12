@@ -8,18 +8,21 @@ import formatPrice from "@/utils/formatPrice";
 import FormOrder from "@/components/formOrderCard";
 import fetchUser from "@/utils/fetchUser";
 import getAuth from "@/utils/getAuthor";
+import LoadingPopup from "@/components/loadingPopup";
+import { Button, message } from "antd";
 import axios from "axios";
 const CartPage = () => {
+  const [isLoad, setIsLoad] = useState(false);
+  const [numItem, setNumItem] = useState(1);
   const { cart, setCart, setCartLength } = useCart();
   const { dataUserLog, setUserId } = fetchUser();
   const { isLogIn, userId } = getAuth();
-  const [data, setData] = useState();
   const price = cart.reduce((accumulator, pro) => {
-    return accumulator + pro[0]?.price;
+    return accumulator + pro?.price;
   }, 0);
   const endow = cart.reduce((accumulator, pro) => {
-    const price = pro[0]?.price || 0;
-    const endow = pro[0]?.endow || 0;
+    const price = pro?.price || 0;
+    const endow = pro?.endow || 0;
     return accumulator + (price * endow) / 100;
   }, 0);
   useEffect(() => {
@@ -27,36 +30,12 @@ const CartPage = () => {
       setUserId(userId);
     }
   }, [isLogIn, setUserId, userId]);
-  useEffect(() => {
-    const updatedData = {
-      idUser: dataUserLog?.id,
-      codeUser: dataUserLog?.codeUser,
-      name: dataUserLog?.nameUser,
-      username: dataUserLog?.username,
-      pass: dataUserLog?.pass,
-      address: dataUserLog?.address,
-      phone: dataUserLog?.phone,
-      role: dataUserLog?.roleUser,
-      avt: dataUserLog?.avtUser,
-      cart: cart,
-    };
-    setData(updatedData);
-    setCartLength(cart.length);
-  }, [cart, setCartLength, dataUserLog]);
-  console.log(data);
-  const updateUser = async () => {
-    if (!data) return;
-    try {
-      await axios.put("http://127.0.0.1:8080/api-users/update-user/", data);
-      alert("Cập nhật thành công");
-    } catch (err) {
-      console.log(err);
-      alert("Đã xảy ra lỗi khi cập nhật");
-    }
+  const [messageApi, contextHolder] = message.useMessage();
+  const info = () => {
+    messageApi.info("Xoá thành công");
   };
   const handleDeletePro = async (e) => {
     const id = e.target.value;
-
     const updatedData = {
       idUser: dataUserLog?.id,
       codeUser: dataUserLog?.codeUser,
@@ -67,34 +46,41 @@ const CartPage = () => {
       phone: dataUserLog?.phone,
       role: dataUserLog?.roleUser,
       avt: dataUserLog?.avtUser,
-      cart: cart.filter((item) => String(item[0].id) !== String(id)),
+      cart: cart.filter((item) => String(item.id) !== String(id)),
     };
-    // hien Loađinh
+    setIsLoad(true);
     try {
       await axios.put(
         "http://127.0.0.1:8080/api-users/update-user/",
         updatedData
       );
-      alert("Cập nhật thành công");
-      // xoa loading
-
       setCart((prevCart) => {
         const updatedCart = prevCart.filter(
-          (item) => String(item[0].id) !== String(id)
+          (item) => String(item.id) !== String(id)
         );
+        console.log(updatedCart);
         return updatedCart;
       });
+      setCartLength((prevCartLength) => prevCartLength - 1);
+      setIsLoad(false);
+      info();
     } catch (err) {
       console.log(err);
       alert("Đã xảy ra lỗi khi cập nhật");
     }
-
   };
-
+  const apartNum = async() => {
+    setNumItem(numItem - 1);
+  };
+  const addNum = () => {
+    setNumItem(numItem + 1);
+  };
   return (
     <>
       <Navbar />
-      <div className="pt-20 mb-[-10px]">
+      {isLoad && <LoadingPopup />}
+      {contextHolder}
+      <div className="pt-20 mb-[-10px] min-h-screen">
         <h1 className="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
           <div className="rounded-lg md:w-2/3">
@@ -104,49 +90,73 @@ const CartPage = () => {
                 className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
               >
                 <img
-                  src={blobtoBase64(dt[0].imgItem)}
+                  src={blobtoBase64(dt.imgItem)}
                   alt="product-image"
                   className="w-full rounded-lg sm:w-40"
                 />
                 <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                   <div className="mt-5 sm:mt-0">
                     <h2 className="text-lg font-bold text-gray-900">
-                      {dt[0].nameItem}
+                      {dt.nameItem}
                     </h2>
                     <p className="mt-1 text-base text-gray-700">
-                      {dt[0].classify === "main meal" && "Đồ ăn bữa chính"}
-                      {dt[0].classify === "snack" && "Đồ ăn vặt"}
-                      {dt[0].classify === "barbecue" && "Đồ nướng"}
-                      {dt[0].classify === "fried" && "Đồ chiên"}
-                      {dt[0].classify === "steamed" && "Đồ hấp"}
-                      {dt[0].classify === "drink" && "Đồ uống"}
-                      {dt[0].classify === "desert" && "Tráng miệng"}
-                      {dt[0].classify === "other" && "Khác"}
+                      {dt.classify === "main meal" && "Đồ ăn bữa chính"}
+                      {dt.classify === "snack" && "Đồ ăn vặt"}
+                      {dt.classify === "barbecue" && "Đồ nướng"}
+                      {dt.classify === "fried" && "Đồ chiên"}
+                      {dt.classify === "steamed" && "Đồ hấp"}
+                      {dt.classify === "drink" && "Đồ uống"}
+                      {dt.classify === "desert" && "Tráng miệng"}
+                      {dt.classify === "other" && "Khác"}
                     </p>
+                    <div className="mt-[10px] animate-textFlick">
+                      Giảm giá:{" "}
+                      <span className="font-semibold">{dt.endow}%</span>
+                    </div>
                   </div>
                   <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6 flex-col items-end">
-                    <div className="flex items-center border-gray-100">
-                      <span className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50">
+                    <div className="flex items-center border-gray-100 ml-[25px] mb-[10px] ">
+                      <button
+                        type="button"
+                        disabled={dt?.quantity <= 1}
+                        onClick={apartNum}
+                        className="rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                      >
                         {" "}
                         -{" "}
-                      </span>
-                      <input
+                      </button>
+                      <button
                         className="h-8 w-8 border bg-white text-center text-xs outline-none text-zinc-950"
                         type="number"
-                        defaultValue={2}
                         min="1"
-                      />
-                      <span className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50">
+                      >
+                        {dt?.quantity}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addNum}
+                        className="rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                      >
                         {" "}
                         +{" "}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <p className="text-sm">{formatPrice(dt[0].price)}đ</p>
-                      <button onClick={handleDeletePro} value={dt[0].id}>
-                        Xoá
                       </button>
                     </div>
+                    <div className="flex items-center space-x-4 line-through">
+                      <p className="text-sm">{formatPrice(dt.price)}đ</p>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <p className="text-lg font-bold mt-[-20px]">
+                        {formatPrice(dt.price - dt.price * (dt.endow / 100))}đ
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleDeletePro}
+                      value={dt.id}
+                      className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-xl text-sm px-3 py-1.5 text-center me-2"
+                    >
+                      Xoá
+                    </button>
                   </div>
                 </div>
               </div>

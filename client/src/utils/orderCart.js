@@ -4,10 +4,11 @@ import axios from "axios";
 export const addOrderCart = async(pros, user) => {
     const data = {
         ...user,
-        img: pros[0].imgItem,
+        img: pros.imgItem,
         status: "new order",
-        price: pros[0].price - (pros[0].price*pros[0].endow)/100,
-        name: pros[0].nameItem
+        price: pros.price - (pros.price*pros.endow)/100,
+        name: pros.nameItem,
+        quantity: pros.quantity,
     }
     return await axios.post("http://127.0.0.1:8080/api-orders/add-order", data);
 }

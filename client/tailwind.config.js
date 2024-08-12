@@ -28,11 +28,17 @@ module.exports = {
           "50%": { opacity: "0.5", transform: "scale(0.75)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        textFlick: {
+          "0%": { color: "#B6870F" },
+          "50%": { color: "#fff" },
+          "100%": { color: "#B6870F" },
+        },
       },
       animation: {
         slideInRight: "slideInRight 0.5s linear",
         slideInBottom: "slideInBottom 0.3s linear",
         openingPopup: "openingPopup 0.2s linear forwards",
+        textFlick: "textFlick 1.5s infinite",
       },
     },
   },

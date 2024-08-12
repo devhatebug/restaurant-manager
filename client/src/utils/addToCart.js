@@ -7,19 +7,16 @@ import { useCart } from "@/context/cartContext";
 const actionAddToCart = () => {
   const { dataUserLog, setUserId } = fetchUser();
   const { isLogIn, userId } = getAuth();
-  const [cart, setCart] = useState(dataUserLog?.cart || []);
   const [loadActAdd, setLoadActAdd] = useState(false);
   const [success, setSuccess] = useState(false);
   const [log, setLog] = useState(false);
-  const { cartLength, setCartLength } = useCart();
-
+  const {cart, setCart, cartLength, setCartLength } = useCart();
   useEffect(() => {
     if (isLogIn) {
       setUserId(userId);
-      setCart(dataUserLog?.cart || []);
+      setCart(dataUserLog?.cart[0] || []);
     }
   }, [isLogIn, userId, setUserId, dataUserLog]);
-
   const dataAuthor = {
     idUser: dataUserLog?.id,
     codeUser: dataUserLog?.codeUser,
@@ -41,7 +38,18 @@ const actionAddToCart = () => {
           `http://127.0.0.1:8080/api-menu/menu/${idAdd}`
         );
         if (proSelect.data) {
-          const updatedCart = [...cart, proSelect.data];
+          const product = { ...proSelect.data[0], quantity: 1 };
+          const productIndex = cart.findIndex((item) => item.id === product.id);
+          let updatedCart;
+          if (productIndex >= 0) {
+            updatedCart = cart.map((item, index) =>
+              index === productIndex
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+          } else {
+            updatedCart = [...cart, product];
+          }
           const newAuth = { ...dataAuthor, cart: updatedCart };
           await axios.put(
             `http://127.0.0.1:8080/api-users/update-user/`,
@@ -49,7 +57,7 @@ const actionAddToCart = () => {
           );
           setLoadActAdd(false);
           setCart(updatedCart);
-          setCartLength(updatedCart?.length);
+          setCartLength(updatedCart.length);
           setSuccess(true);
           setTimeout(() => {
             setSuccess(false);
@@ -58,12 +66,12 @@ const actionAddToCart = () => {
       } catch (err) {
         alert("Lỗi ngoài ý muốn!");
         console.log(err);
+        setLoadActAdd(false);
       }
     } else {
       setLog(true);
     }
   };
-
   return {
     cart,
     loadActAdd,

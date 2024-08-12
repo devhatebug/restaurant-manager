@@ -17,7 +17,8 @@ const orders = connection.define(
     dispatch: { type: DataTypes.STRING},
     noteOrder: { type: DataTypes.STRING },
     nameClient: {type:DataTypes.STRING},
-    phoneClient: {type: DataTypes.STRING}
+    phoneClient: {type: DataTypes.STRING},
+    quantity: {type: DataTypes.INTEGER}
   },
   { tableName: "orders", timestamps: false }
 );

@@ -3750,6 +3750,9 @@ details.collapse summary::-webkit-details-marker {
 .ml-\[-10px\] {
   margin-left: -10px;
 }
+.ml-\[25px\] {
+  margin-left: 25px;
+}
 .ml-\[40px\] {
   margin-left: 40px;
 }
@@ -4162,6 +4165,23 @@ details.collapse summary::-webkit-details-marker {
 }
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+@keyframes textFlick {
+
+  0% {
+    color: #B6870F;
+  }
+
+  50% {
+    color: #fff;
+  }
+
+  100% {
+    color: #B6870F;
+  }
+}
+.animate-textFlick {
+  animation: textFlick 1.5s infinite;
 }
 .cursor-default {
   cursor: default;
@@ -5281,6 +5301,11 @@ html::-webkit-scrollbar-thumb {
 .focus\:ring-indigo-700:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(81 69 205 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-red-300:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(248 180 180 / var(--tw-ring-opacity));
 }
 
 .focus\:ring-red-400:focus {
