@@ -13,15 +13,14 @@ import { Button, message } from "antd";
 import axios from "axios";
 const CartPage = () => {
   const [isLoad, setIsLoad] = useState(false);
-  const [numItem, setNumItem] = useState(1);
   const { cart, setCart, setCartLength } = useCart();
   const { dataUserLog, setUserId } = fetchUser();
   const { isLogIn, userId } = getAuth();
   const price = cart.reduce((accumulator, pro) => {
-    return accumulator + pro?.price;
+    return accumulator + pro?.price * pro?.quantity;
   }, 0);
   const endow = cart.reduce((accumulator, pro) => {
-    const price = pro?.price || 0;
+    const price = pro?.price * pro?.quantity || 0;
     const endow = pro?.endow || 0;
     return accumulator + (price * endow) / 100;
   }, 0);
@@ -69,11 +68,61 @@ const CartPage = () => {
       alert("Đã xảy ra lỗi khi cập nhật");
     }
   };
-  const apartNum = async() => {
-    setNumItem(numItem - 1);
+  const apartNum = async (e) => {
+    const id = e.target.value;
+    const newCart = cart.map((item) => {
+      return String(item.id) === id ? {...item, quantity: item.quantity - 1} : item
+    });
+    const dataAuthor = {
+      idUser: dataUserLog?.id,
+      codeUser: dataUserLog?.codeUser,
+      name: dataUserLog?.nameUser,
+      username: dataUserLog?.username,
+      pass: dataUserLog?.pass,
+      address: dataUserLog?.address,
+      phone: dataUserLog?.phone,
+      role: dataUserLog?.roleUser,
+      avt: dataUserLog?.avtUser,
+      cart: newCart,
+    }
+    try {
+      await axios.put(
+        "http://127.0.0.1:8080/api-users/update-user/",
+        dataAuthor
+      );
+      setCart(newCart);
+    } catch(err) {
+      console.log(err);
+    }
   };
-  const addNum = () => {
-    setNumItem(numItem + 1);
+  const addNum = async(e) => {
+    const id = e.target.value;
+    const newCart = cart.map((item) => {
+      return String(item.id) === id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item;
+    });
+    const dataAuthor = {
+      idUser: dataUserLog?.id,
+      codeUser: dataUserLog?.codeUser,
+      name: dataUserLog?.nameUser,
+      username: dataUserLog?.username,
+      pass: dataUserLog?.pass,
+      address: dataUserLog?.address,
+      phone: dataUserLog?.phone,
+      role: dataUserLog?.roleUser,
+      avt: dataUserLog?.avtUser,
+      cart: newCart,
+    };
+    try {
+      await axios.put(
+        "http://127.0.0.1:8080/api-users/update-user/",
+        dataAuthor
+      );
+      setCart(newCart);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <>
@@ -84,83 +133,85 @@ const CartPage = () => {
         <h1 className="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
           <div className="rounded-lg md:w-2/3">
-            {cart.map((dt, id) => (
-              <div
-                key={id}
-                className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
-              >
-                <img
-                  src={blobtoBase64(dt.imgItem)}
-                  alt="product-image"
-                  className="w-full rounded-lg sm:w-40"
-                />
-                <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                  <div className="mt-5 sm:mt-0">
-                    <h2 className="text-lg font-bold text-gray-900">
-                      {dt.nameItem}
-                    </h2>
-                    <p className="mt-1 text-base text-gray-700">
-                      {dt.classify === "main meal" && "Đồ ăn bữa chính"}
-                      {dt.classify === "snack" && "Đồ ăn vặt"}
-                      {dt.classify === "barbecue" && "Đồ nướng"}
-                      {dt.classify === "fried" && "Đồ chiên"}
-                      {dt.classify === "steamed" && "Đồ hấp"}
-                      {dt.classify === "drink" && "Đồ uống"}
-                      {dt.classify === "desert" && "Tráng miệng"}
-                      {dt.classify === "other" && "Khác"}
-                    </p>
-                    <div className="mt-[10px] animate-textFlick">
-                      Giảm giá:{" "}
-                      <span className="font-semibold">{dt.endow}%</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6 flex-col items-end">
-                    <div className="flex items-center border-gray-100 ml-[25px] mb-[10px] ">
-                      <button
-                        type="button"
-                        disabled={dt?.quantity <= 1}
-                        onClick={apartNum}
-                        className="rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
-                      >
-                        {" "}
-                        -{" "}
-                      </button>
-                      <button
-                        className="h-8 w-8 border bg-white text-center text-xs outline-none text-zinc-950"
-                        type="number"
-                        min="1"
-                      >
-                        {dt?.quantity}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={addNum}
-                        className="rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
-                      >
-                        {" "}
-                        +{" "}
-                      </button>
-                    </div>
-                    <div className="flex items-center space-x-4 line-through">
-                      <p className="text-sm">{formatPrice(dt.price)}đ</p>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <p className="text-lg font-bold mt-[-20px]">
-                        {formatPrice(dt.price - dt.price * (dt.endow / 100))}đ
+            {cart.map((dt, id) => {
+              return (
+                <div
+                  key={id}
+                  className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
+                >
+                  <img
+                    src={blobtoBase64(dt.imgItem)}
+                    alt="product-image"
+                    className="w-full rounded-lg sm:w-40"
+                  />
+                  <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
+                    <div className="mt-5 sm:mt-0">
+                      <h2 className="text-lg font-bold text-gray-900">
+                        {dt.nameItem}
+                      </h2>
+                      <p className="mt-1 text-base text-gray-700">
+                        {dt.classify === "main meal" && "Đồ ăn bữa chính"}
+                        {dt.classify === "snack" && "Đồ ăn vặt"}
+                        {dt.classify === "barbecue" && "Đồ nướng"}
+                        {dt.classify === "fried" && "Đồ chiên"}
+                        {dt.classify === "steamed" && "Đồ hấp"}
+                        {dt.classify === "drink" && "Đồ uống"}
+                        {dt.classify === "desert" && "Tráng miệng"}
+                        {dt.classify === "other" && "Khác"}
                       </p>
+                      <div className="mt-[10px] animate-textFlick">
+                        Giảm giá:{" "}
+                        <span className="font-semibold">{dt.endow}%</span>
+                      </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleDeletePro}
-                      value={dt.id}
-                      className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-xl text-sm px-3 py-1.5 text-center me-2"
-                    >
-                      Xoá
-                    </button>
+                    <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6 flex-col items-end">
+                      <div className="flex items-center border-gray-100 ml-[25px] mb-[10px] ">
+                        <button
+                          type="button"
+                          disabled={dt?.quantity <= 1}
+                          onClick={apartNum}
+                          value={dt.id}
+                          className="rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                        >
+                          -
+                        </button>
+                        <button
+                          className="h-8 w-8 border bg-white text-center text-xs outline-none text-zinc-950"
+                          type="number"
+                          min="1"
+                        >
+                          {dt?.quantity}
+                        </button>
+                        <button
+                          value={dt.id}
+                          type="button"
+                          onClick={addNum}
+                          className="rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-4 line-through">
+                        <p className="text-sm">{formatPrice(dt.price)}đ</p>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <p className="text-lg font-bold mt-[-20px]">
+                          {formatPrice(dt.price - dt.price * (dt.endow / 100))}đ
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleDeletePro}
+                        value={dt.id}
+                        className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-xl text-sm px-3 py-1.5 text-center me-2"
+                      >
+                        Xoá
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
             <div className="mb-2 flex justify-between">

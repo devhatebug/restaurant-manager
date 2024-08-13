@@ -1,9 +1,6 @@
 {
   "/page": "app/page.js",
   "/cart/page": "app/cart/page.js",
-  "/products/page": "app/products/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/admin/users/page": "app/admin/users/page.js",
-  "/admin/page": "app/admin/page.js"
+  "/admin/users/page": "app/admin/users/page.js"
 }
