@@ -1,6 +1,5 @@
 import {useState} from "react";
 import axios from "axios";
-
 const getProById = () => {
     const [data, setData] = useState();
     const URL_API = `http://127.0.0.1:8080/api-menu/menu`;

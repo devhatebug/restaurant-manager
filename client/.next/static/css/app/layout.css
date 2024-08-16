@@ -3645,6 +3645,9 @@ details.collapse summary::-webkit-details-marker {
 .m-auto {
   margin: auto;
 }
+.m-\[5px\] {
+  margin: 5px;
+}
 .-mx-1 {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
@@ -3863,6 +3866,9 @@ details.collapse summary::-webkit-details-marker {
 }
 .grid {
   display: grid;
+}
+.contents {
+  display: contents;
 }
 .hidden {
   display: none;
@@ -4556,6 +4562,10 @@ details.collapse summary::-webkit-details-marker {
   --tw-bg-opacity: 1;
   background-color: rgb(253 253 234 / var(--tw-bg-opacity));
 }
+.bg-green-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(4 108 78 / var(--tw-bg-opacity));
+}
 .bg-opacity-40 {
   --tw-bg-opacity: 0.4;
 }
@@ -5169,6 +5179,11 @@ html::-webkit-scrollbar-thumb {
   background-color: rgb(194 120 3 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-green-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 84 63 / var(--tw-bg-opacity));
+}
+
 .hover\:text-blue-50:hover {
   --tw-text-opacity: 1;
   color: rgb(235 245 255 / var(--tw-text-opacity));
@@ -5311,6 +5326,11 @@ html::-webkit-scrollbar-thumb {
 .focus\:ring-red-400:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(249 128 128 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-green-300:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(132 225 188 / var(--tw-ring-opacity));
 }
 
 .focus\:ring-opacity-50:focus {

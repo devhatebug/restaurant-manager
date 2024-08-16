@@ -50,6 +50,7 @@ const FormOrder = ({ idPro }) => {
         note: note ? note : "",
         nameClient: nameClient ? nameClient : dataUserLog?.nameUser,
         phoneClient: phoneClient ? phoneClient : dataUserLog?.phone,
+        quantity: "1"
       };
       setDataNewOrder(newOrder);
     }

@@ -14,6 +14,7 @@ const actionOrder = () => {
 
   const handleOrderPro = async (dataOrder) => {
     setLoad(true)
+    console.log(dataOrder.img)
     if (isLogIn) {
       try {
         await axios.post(
