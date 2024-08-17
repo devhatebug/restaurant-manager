@@ -8,8 +8,6 @@ import {
 } from "@/utils/crudOrders";
 import { blobtoBase64 } from "@/utils/toBase64";
 import formatPrice from "@/utils/formatPrice";
-
-// Cập nhật hàm columns để nhận handlePrePare như một tham số
 const columns = (showOrderDetails, handlePrePare, handleDeleteOrder) => [
   {
     title: "Tên sản phẩm",
@@ -124,7 +122,7 @@ const TableNewOrders = () => {
       note: orderPre?.noteOrder,
       nameClient: orderPre?.nameClient,
       phoneClient: orderPre?.phoneClient,
-      img: orderPre?.img,
+      img: orderPre?.img.data,
       quantiy: orderPre?.quantity,
       idItem: orderPre?.id,
     };
@@ -166,7 +164,7 @@ const TableNewOrders = () => {
         note: data?.noteOrder,
         nameClient: data?.nameClient,
         phoneClient: data?.phoneClient,
-        img: data?.img,
+        img: data?.img.data,
         quantity: data?.quantity,
         idItem: data?.id,
       }));
