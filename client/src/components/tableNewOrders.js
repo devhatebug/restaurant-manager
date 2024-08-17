@@ -55,14 +55,23 @@ const columns = (showOrderDetails, handlePrePare, handleDeleteOrder) => [
 ];
 
 const TableNewOrders = () => {
+  const [dataNewOrders, setDataNewOrders] = useState()
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingPre, setLoadingPre] = useState(false);
+  const [loadingDel, setLoadingDel] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [open, setOpen] = useState(false);
   const [loadingModal, setLoadingModal] = useState(true);
   const [orderSelect, setOrderSelect] = useState();
   const [messageApi, contextHolder] = message.useMessage();
-
+  const onSelectChange = (newSelectedRowKeys) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
   const alertSuccessPre = () => {
     messageApi.success("Đã chuyển sang trạng thái chuẩn bị đơn hàng");
   };
@@ -76,9 +85,10 @@ const TableNewOrders = () => {
     try {
       const data = await getAllOrders();
       const newOrders = data.filter((el) => el?.statusOrder === "new order");
+      setDataNewOrders(newOrders);
       const formattedData = Array.isArray(newOrders)
         ? newOrders.map((dt, id) => ({
-            key: id,
+            key: dt?.id,
             nameProduct: dt?.nameOrder,
             price: `${formatPrice(dt?.price)}đ`,
             nameUser: dt?.nameClient,
@@ -105,8 +115,7 @@ const TableNewOrders = () => {
   };
 
   const handlePrePare = async (id) => {
-    const data = await getAllOrders();
-    const orderPre = data.find((el) => el.id === id);
+    const orderPre = dataNewOrders.find((el) => el.id === id);
     const dataUpdate = {
       nameOrder: orderPre?.nameOrder,
       price: orderPre?.price,
@@ -142,25 +151,58 @@ const TableNewOrders = () => {
     fetchData();
   }, []);
 
-  const start = () => {
-    setLoading(true);
-    setTimeout(() => {
+  const prepareOrders = async () => {
+    setLoadingPre(true)
+    try {
+      const targetId = selectedRowKeys;
+      const dataSelect = dataNewOrders.filter((el) =>
+        targetId.includes(el?.id)
+      );
+      const ordersUpdate = dataSelect.map((data) => ({
+        nameOrder: data?.nameOrder,
+        price: data?.price,
+        status: "prepare",
+        dispatch: data?.dispatch,
+        note: data?.noteOrder,
+        nameClient: data?.nameClient,
+        phoneClient: data?.phoneClient,
+        img: data?.img,
+        quantity: data?.quantity,
+        idItem: data?.id,
+      }));
+      await Promise.all(
+        ordersUpdate.map(async (order) => {
+          await editOrder(order);
+        })
+      );
+      setLoadingPre(false)
+      fetchData();
+      setSelectedRowKeys([])
+      alertSuccessPre();
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi cập nhật đơn hàng:", error);
+      alertErr();
+    }
+  };
+
+  const deleteOrders = async() => {
+    setLoadingDel(true);
+    try {
+      const targetId = selectedRowKeys;
+      await Promise.all(
+        targetId.map(async (id) => {
+          await deleteOrder(id);
+        })
+      );
+      setLoadingDel(false);
+      fetchData();
       setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
-  };
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  const hasSelected = selectedRowKeys.length > 0;
+      alertSuccessDel();
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi cập nhật đơn hàng:", error);
+      alertErr();
+    }
+  }
 
   return (
     <>
@@ -244,11 +286,19 @@ const TableNewOrders = () => {
         <Flex align="center" gap="middle">
           <Button
             type="primary"
-            onClick={start}
+            onClick={prepareOrders}
             disabled={!hasSelected}
-            loading={loading}
+            loading={loadingPre}
           >
-            Reload
+            Prepare
+          </Button>
+          <Button
+            danger
+            onClick={deleteOrders}
+            disabled={!hasSelected}
+            loading={loadingDel}
+          >
+            Delete
           </Button>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
         </Flex>
