@@ -16,14 +16,23 @@ const CartPage = () => {
   const { cart, setCart, setCartLength } = useCart();
   const { dataUserLog, setUserId } = fetchUser();
   const { isLogIn, userId } = getAuth();
-  const price = cart.reduce((accumulator, pro) => {
-    return accumulator + pro?.price * pro?.quantity;
-  }, 0);
-  const endow = cart.reduce((accumulator, pro) => {
-    const price = pro?.price * pro?.quantity || 0;
-    const endow = pro?.endow || 0;
-    return accumulator + (price * endow) / 100;
-  }, 0);
+  const [price, setPrice] = useState(0);
+  const [endow, setEndow] = useState(0);
+  useEffect(() => {
+    if (cart) {
+      const price = cart.reduce((accumulator, pro) => {
+        return accumulator + pro?.price * pro?.quantity;
+      }, 0);
+      setPrice(price);
+      const endow = cart.reduce((accumulator, pro) => {
+        const price = pro?.price * pro?.quantity || 0;
+        const endow = pro?.endow || 0;
+        return accumulator + (price * endow) / 100;
+      }, 0);
+      setEndow(endow);
+    }
+  }, [cart])
+  
   useEffect(() => {
     if (isLogIn) {
       setUserId(userId);
