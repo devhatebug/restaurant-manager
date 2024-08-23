@@ -21,16 +21,15 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
     const formData = {
         codeUser: dataCodeUser,
         name: dataName === "" ? data.nameUser : dataName,
-        avt: base64Img === null ? data.avtUser : base64Img,
+        avt: base64Img === null ? data.avtUser.data : base64Img,
         username: dataUserName === "" ? data.username : dataUserName,
         pass: dataPass === "" ? data.pass : dataPass,
         address: dataAddress === "" ? data.address : dataAddress,
         phone: dataPhone === "" ? data.phone : dataPhone,
         role: dataRole === "" ? data.roleUser : dataRole,
         idUser: data.id,
-        cart: []
+        cart: data.cart
     };
-
     if(dataImg) { 
         fileToBase64(dataImg, setUrlImg)
     }
