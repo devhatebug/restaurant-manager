@@ -4,7 +4,7 @@ import axios from "axios";
 
 const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAddErr, setAddFinish}) => {
     const data = dataProduct[0];
-    // state data 
+    // state data
     const [name, setName] = useState(data.nameItem);
     const [price, setPrice] = useState(data.price);
     const [endow, setEndow] = useState(data.endow);
@@ -24,7 +24,7 @@ const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAdd
     const formatPrice = (price) => {
         return price.toLocaleString('vi-VN');
     }
-    // function handle img 
+    // function handle img
     const changeImg = () => {
         setIsChangeImg(true)
         setIsImg(false)
@@ -35,7 +35,7 @@ const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAdd
         if(e.target.files[0] !== undefined) {
             setIsImg(true)
         }
-    } 
+    }
     const changeNewImg = () => {
         setBase64Img("")
         setImg(undefined)
@@ -56,37 +56,44 @@ const FormEditProduct = ({onClose, dataProduct, setMiddleCheck, products, setAdd
         price: price,
         idItem: data.id,
     }
-    const handleUpdateProduct = async () => {
-      const checkValue = products.find((product) => product.codeItem === code);
-      const maxSizeImg = 2 * 1024 * 1024;
-      if (
-        code === data.codeItem ||
-        (checkValue === undefined && img.size <= maxSizeImg)
-      ) {
-        try {
-          await axios.put(
-            `http://127.0.0.1:8080/api-menu/update-menu`,
-            dataUpdate
-          );
-          console.log("done");
-          setMiddleCheck(1);
-          setAddFinish(true);
-          setTimeout(() => {
-            setAddFinish(false);
-          }, 3000);
-          onClose();
-        } catch (err) {
-          console.log(err);
-          setAddErr(true);
-          setTimeout(() => {
-            setAddErr(false);
-          }, 3000);
-        }
-      } else {
-        setIsWarning(true);
-        setCode(data.codeItem);
-      }
-    };
+
+
+
+
+const handleUpdateProduct = async () => {
+  const checkValue = products.find((product) => product.codeItem === code);
+  const maxSizeImg = 2 * 1024 * 1024;
+
+  const isImgValid = img && img.size !== undefined && img.size <= maxSizeImg;
+
+  if (
+    code === data.codeItem ||
+    (checkValue === undefined && (isImgValid || !img))
+  ) {
+    try {
+      await axios.put(
+        `http://127.0.0.1:8080/api-menu/update-menu`,
+        dataUpdate
+      );
+      console.log("done");
+      setMiddleCheck(1);
+      setAddFinish(true);
+      setTimeout(() => {
+        setAddFinish(false);
+      }, 3000);
+      onClose();
+    } catch (err) {
+      console.log(err);
+      setAddErr(true);
+      setTimeout(() => {
+        setAddErr(false);
+      }, 3000);
+    }
+  } else {
+    setIsWarning(true);
+    setCode(data.codeItem);
+  }
+};
 
 
     return (

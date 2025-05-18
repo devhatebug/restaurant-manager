@@ -122,10 +122,10 @@ const BoardProducts = () => {
               {isLoading && <SkeletonGrid count={4} />}
               {proEndow.map((dt, id) => (
                 <li key={id} className="item mx-[10px] my-[15px]">
-                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-                    <button className="relative">
+                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow h-[350px] flex flex-col">
+                    <button className="relative h-48 overflow-hidden">
                       <img
-                        className="p-8 rounded-t-lg w-full"
+                        className="p-8 rounded-t-lg w-full h-full object-contain"
                         src={blobtoBase64(dt.imgItem)}
                         alt="product image"
                       />
@@ -137,8 +137,8 @@ const BoardProducts = () => {
                         </div>
                       )}
                     </button>
-                    <div className="px-5 pb-5">
-                      <button>
+                    <div className="px-5 pb-5 flex-1 flex flex-col">
+                      <button className="h-16 overflow-hidden">
                         <h5 className="text-xl font-semibold tracking-tight text-gray-900">
                           {dt.nameItem}
                         </h5>
@@ -160,7 +160,7 @@ const BoardProducts = () => {
                           3
                         </span>
                       </div>
-                      <div className="flex items-center justify-between flex-wrap">
+                      <div className="flex items-center justify-between flex-wrap mt-auto">
                         <div className="flex flex-col">
                           <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                             {formatPrice(dt.price)} VND
@@ -172,21 +172,23 @@ const BoardProducts = () => {
                             VND
                           </span>
                         </div>
-                        <button
-                          value={dt.id}
-                          onClick={handleAddToCart}
-                          className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                        >
-                          Add To Cart
-                        </button>
-                        <button
-                          type="button"
-                          value={dt.id}
-                          onClick={(e) => selectIdPro(e)}
-                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
-                        >
-                          Order
-                        </button>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <button
+                            value={dt.id}
+                            onClick={handleAddToCart}
+                            className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                          >
+                            Add To Cart
+                          </button>
+                          <button
+                            type="button"
+                            value={dt.id}
+                            onClick={(e) => selectIdPro(e)}
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+                          >
+                            Order
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -211,10 +213,10 @@ const BoardProducts = () => {
               {isLoading && <SkeletonGrid count={4} />}
               {proNew.map((dt, id) => (
                 <li key={id} className="item mx-[10px] my-[15px]">
-                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-                    <button className="relative">
+                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow h-[350px] flex flex-col">
+                    <button className="relative h-48 overflow-hidden">
                       <img
-                        className="p-8 rounded-t-lg w-full"
+                        className="p-8 rounded-t-lg w-full h-full object-contain"
                         src={blobtoBase64(dt.imgItem)}
                         alt="product image"
                       />
@@ -226,8 +228,8 @@ const BoardProducts = () => {
                         </div>
                       )}
                     </button>
-                    <div className="px-5 pb-5">
-                      <button>
+                    <div className="px-5 pb-5 flex-1 flex flex-col">
+                      <button className="h-16 overflow-hidden">
                         <h5 className="text-xl font-semibold tracking-tight text-gray-900">
                           {dt.nameItem}
                         </h5>
@@ -249,7 +251,7 @@ const BoardProducts = () => {
                           3
                         </span>
                       </div>
-                      <div className="flex items-center justify-between flex-wrap">
+                      <div className="flex items-center justify-between flex-wrap mt-auto">
                         <div className="flex flex-col">
                           <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                             {formatPrice(dt.price)} VND
@@ -261,21 +263,23 @@ const BoardProducts = () => {
                             VND
                           </span>
                         </div>
-                        <button
-                          value={dt.id}
-                          onClick={handleAddToCart}
-                          className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                        >
-                          Add To Cart
-                        </button>
-                        <button
-                          type="button"
-                          value={dt.id}
-                          onClick={(e) => selectIdPro(e)}
-                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
-                        >
-                          Order
-                        </button>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <button
+                            value={dt.id}
+                            onClick={handleAddToCart}
+                            className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                          >
+                            Add To Cart
+                          </button>
+                          <button
+                            type="button"
+                            value={dt.id}
+                            onClick={(e) => selectIdPro(e)}
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+                          >
+                            Order
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -300,10 +304,10 @@ const BoardProducts = () => {
               {isLoading && <SkeletonGrid count={4} />}
               {proSell.map((dt, id) => (
                 <li key={id} className="item mx-[10px] my-[15px]">
-                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-                    <button className="relative">
+                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow h-[350px] flex flex-col">
+                    <button className="relative h-48 overflow-hidden">
                       <img
-                        className="p-8 rounded-t-lg w-full"
+                        className="p-8 rounded-t-lg w-full h-full object-contain"
                         src={blobtoBase64(dt.imgItem)}
                         alt="product image"
                       />
@@ -315,8 +319,8 @@ const BoardProducts = () => {
                         </div>
                       )}
                     </button>
-                    <div className="px-5 pb-5">
-                      <button>
+                    <div className="px-5 pb-5 flex-1 flex flex-col">
+                      <button className="h-16 overflow-hidden">
                         <h5 className="text-xl font-semibold tracking-tight text-gray-900">
                           {dt.nameItem}
                         </h5>
@@ -338,7 +342,7 @@ const BoardProducts = () => {
                           3
                         </span>
                       </div>
-                      <div className="flex items-center justify-between flex-wrap">
+                      <div className="flex items-center justify-between flex-wrap mt-auto">
                         <div className="flex flex-col">
                           <span className="text-base font-extralight text-gray-900 dark:text-white line-through">
                             {formatPrice(dt.price)} VND
@@ -350,21 +354,23 @@ const BoardProducts = () => {
                             VND
                           </span>
                         </div>
-                        <button
-                          value={dt.id}
-                          onClick={handleAddToCart}
-                          className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                        >
-                          Add To Cart
-                        </button>
-                        <button
-                          type="button"
-                          value={dt.id}
-                          onClick={(e) => selectIdPro(e)}
-                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
-                        >
-                          Order
-                        </button>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <button
+                            value={dt.id}
+                            onClick={handleAddToCart}
+                            className="flex items-center text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                          >
+                            Add To Cart
+                          </button>
+                          <button
+                            type="button"
+                            value={dt.id}
+                            onClick={(e) => selectIdPro(e)}
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+                          >
+                            Order
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

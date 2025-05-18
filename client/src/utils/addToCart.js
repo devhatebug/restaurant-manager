@@ -14,7 +14,7 @@ const actionAddToCart = () => {
   useEffect(() => {
     if (isLogIn) {
       setUserId(userId);
-      setCart(dataUserLog?.cart[0] || []);
+      setCart(Array.isArray(dataUserLog?.cart) ? dataUserLog.cart[0] || [] : []);
     }
   }, [isLogIn, userId, setUserId, dataUserLog]);
   const dataAuthor = {
