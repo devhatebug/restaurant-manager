@@ -5,7 +5,7 @@ const Carousel = () => {
   const [prevIndex, setPrevIndex] = useState(null);
   const [items, setItems] = useState([
     "https://th.bing.com/th/id/R.f486fe8f52c17ebcd398ef7a8a02def2?rik=%2fKQM0DXO86yPFA&pid=ImgRaw&r=0",
-    "https://th.bing.com/th/id/R.daede290b7d4ae89e404c138056c1501?rik=WfQXSR8jU%2bchGQ&pid=ImgRaw&r=0",
+    "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/delicious-food-menu-banner-template-design-5ab8aff9abec77225b59d9a6f7a8db55_screen.jpg?ts=1734801635",
     "https://cdn.dribbble.com/users/7361011/screenshots/15363787/food-banner---1.jpg",
   ]);
 
