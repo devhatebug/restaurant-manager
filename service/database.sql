@@ -4,7 +4,7 @@ CREATE TABLE menu (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   codeItem VARCHAR(255) NOT NULL,
   nameItem VARCHAR(255) NOT NULL,
-  imgItem BLOB,
+  imgItem LONGBLOB,
   classify VARCHAR(255) NOT NULL,
   endow INT,
   isNew BOOLEAN,
@@ -30,7 +30,7 @@ CREATE TABLE users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   codeUser VARCHAR(255) NOT NULL,
   nameUser VARCHAR(255) NOT NULL,
-  avtUser BLOB,
+  avtUser LONGBLOB,
   username VARCHAR(255) NOT NULL,
   pass VARCHAR(255) NOT NULL,
   address VARCHAR(255) NOT NULL,
@@ -38,3 +38,7 @@ CREATE TABLE users (
   roleUser VARCHAR(255) NOT NULL,
   cart JSON
 );
+
+# insert admin user
+INSERT INTO users (codeUser, nameUser, avtUser, username, pass, address, phone, roleUser, cart) VALUES
+('AD001', 'Admin', NULL, 'admin', 'admin', '123 Main St', '1234567890', 'admin', NULL);

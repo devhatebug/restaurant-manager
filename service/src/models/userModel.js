@@ -5,7 +5,7 @@ const Users = connection.define('users', {
   id: {type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
   codeUser: {type: DataTypes.STRING, allowNull: false},
   nameUser : {type:DataTypes.STRING, allowNull: false},
-  avtUser : {type:DataTypes.BLOB},
+  avtUser : {type:DataTypes.BLOB("long")},
   username: {type: DataTypes.STRING, allowNull:false},
   pass : {type:DataTypes.STRING, allowNull:false},
   address : {type:DataTypes.STRING, allowNull:false},
