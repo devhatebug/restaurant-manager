@@ -31,7 +31,7 @@ const Navbar = () => {
     }
   }, [isLogIn, userId, setUserId]);
   const nameAuthor = dataUserLog?.nameUser;
-  const {cartLength} = useCart();
+  const {cart} = useCart();
   const handleLogOut = () => {
     const statusOut = logOutAcc(setErrOut);
     if (statusOut === true) {
@@ -74,7 +74,7 @@ const Navbar = () => {
                   />
                 </svg>
                 <span className="badge badge-sm indicator-item">
-                  {cartLength}
+                  {cart.length}
                 </span>
               </div>
             </div>
@@ -83,7 +83,7 @@ const Navbar = () => {
               className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
             >
               <div className="card-body">
-                <span className="font-bold text-lg">{cartLength} sản phẩm</span>
+                <span className="font-bold text-lg">{cart.length} sản phẩm</span>
                 <span className="text-info">Subtotal: $999</span>
                 <div className="card-actions">
                   <button
