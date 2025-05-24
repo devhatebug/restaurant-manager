@@ -10,79 +10,98 @@ const FormAddUser = ({
   setCheckData,
   setUserUpdate,
 }) => {
-  const [img, setImg] = useState();
+  const [imgFile, setImgFile] = useState(null);
+  const [previewImg, setPreviewImg] = useState("");
   const [code, setCode] = useState("abc");
-  const [name, setName] = useState();
+  const [name, setName] = useState("");
   const [role, setRole] = useState("user");
-  const [username, setUsername] = useState();
-  const [pass, setPass] = useState();
-  const [address, setAddress] = useState();
-  const [phone, setPhone] = useState();
-  const [base64Img, setBase64Img] = useState();
+  const [username, setUsername] = useState("");
+  const [pass, setPass] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [isReady, setIsReady] = useState(false);
-  const [notiDupicate, setNotiDuplicate] = useState(false);
+  const [notiDuplicate, setNotiDuplicate] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
-  const dataNewUser = {
-    codeUser: code,
-    name: name,
-    avt: base64Img,
-    username: username,
-    pass: pass,
-    address: address,
-    phone: phone,
-    role: role,
+  const [isLoading, setIsLoading]   = useState(false);
+
+  const handleUploadFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImgFile(file);
+
+      // Tạo preview ảnh
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImg(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
   const addUser = async () => {
-    const isValid = [
-      img,
-      code,
-      name,
-      role,
-      username,
-      pass,
-      address,
-      phone,
-    ].every((value) => value !== null && value !== undefined && value !== "");
+    // Kiểm tra các trường bắt buộc
+    const isValid = [name, username, pass, address, phone].every(
+      (value) => value !== null && value !== undefined && value !== ""
+    );
+
+    // Kiểm tra kích thước ảnh
     const maxSizeImg = 2 * 1024 * 1024;
-    if (img && img.size > maxSizeImg) {
+    if (imgFile && imgFile.size > maxSizeImg) {
       setIsWarning(true);
+      return;
     }
-    if (isValid && notiDupicate === false && img.size <= maxSizeImg) {
-      try {
-        await axios.post(
-          "http://127.0.0.1:8080/api-users/add-users",
-          dataNewUser
-        );
-        setCheckData(1);
-        setIsReload(1);
-        setUserUpdate(1);
-        onClose();
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
+
+    // Kiểm tra username trùng
+    if (notiDuplicate) {
+      return;
+    }
+
+    if (!isValid) {
       setIsReady(true);
+      return;
     }
+
+    try {
+        setIsLoading(true)
+      // Tạo FormData
+      const formData = new FormData();
+      formData.append('codeUser', code);
+      formData.append('name', name);
+      formData.append('username', username);
+      formData.append('pass', pass);
+      formData.append('address', address);
+      formData.append('phone', phone);
+      formData.append('role', role);
+
+      if (imgFile) {
+        formData.append('file', imgFile);
+      }
+
+      // Gửi request
+      await axios.post("http://127.0.0.1:8080/api-users/add-users", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setCheckData(1);
+      setIsReload(prev => prev + 1);
+      setUserUpdate(1);
+      onClose();
+    } catch (err) {
+      console.error("Lỗi khi thêm người dùng:", err);
+    }
+    setIsLoading(false)
   };
-  const handleUploadFile = async (e) => {
-    fileToBase64(e.target.files[0], setBase64Img);
-    setImg(e.target.files[0]);
-  };
+
   useEffect(() => {
     const foundUserName = dataUsers.find((user) => user.username === username);
-    if (foundUserName !== undefined && username !== "") {
-      setNotiDuplicate(true);
-    } else {
-      setNotiDuplicate(false);
-    }
+    setNotiDuplicate(foundUserName !== undefined && username !== "");
   }, [username, dataUsers]);
   return (
     <div>
       {isWarning && (
-        <div
-          className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
-          role="alert"
-        >
+        <div className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
           <svg
             className="flex-shrink-0 inline w-4 h-4 me-3"
             aria-hidden="true"
@@ -99,11 +118,8 @@ const FormAddUser = ({
           </div>
         </div>
       )}
-      {notiDupicate && (
-        <div
-          className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
-          role="alert"
-        >
+       {notiDuplicate && (
+        <div className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
           <svg
             className="flex-shrink-0 inline w-4 h-4 me-3"
             aria-hidden="true"
@@ -120,11 +136,8 @@ const FormAddUser = ({
           </div>
         </div>
       )}
-      {isReady && (
-        <div
-          className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
-          role="alert"
-        >
+       {isReady && (
+        <div className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
           <svg
             className="flex-shrink-0 inline w-4 h-4 me-3"
             aria-hidden="true"
@@ -145,15 +158,20 @@ const FormAddUser = ({
         <div className="w-12 h-12 mr-4 flex-none rounded-xl border overflow-hidden">
           <img
             className="w-12 h-12 mr-4 object-cover"
-            src={img === undefined ? `` : base64Img}
+            src={previewImg || "https://avatars.githubusercontent.com/u/739984?v=4"} // Thay bằng đường dẫn ảnh mặc định
             alt="Avatar Upload"
           />
         </div>
-        <label className="cursor-pointer ">
+        <label className="cursor-pointer">
           <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">
             Browse
           </span>
-          <input onChange={handleUploadFile} type="file" className="hidden" />
+          <input
+            onChange={handleUploadFile}
+            type="file"
+            accept="image/*"
+            className="hidden"
+          />
         </label>
       </div>
       <div className="grid gap-6 mb-6 md:grid-cols-2">
@@ -260,7 +278,9 @@ const FormAddUser = ({
         onClick={addUser}
         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mr-[10px] mb-[10px]"
       >
-        Submit
+        {
+            isLoading ? 'Đang xử lý ...' : 'Submit'
+        }
       </button>
       <button
         onClick={onClose}

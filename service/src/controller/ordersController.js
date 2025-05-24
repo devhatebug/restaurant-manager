@@ -16,7 +16,7 @@ const addOrder = (req, res) => {
     req.body;
   const dataNewOrder = {
     nameOrder: name,
-    img: img.data,
+    img: img,
     price: price,
     statusOrder: status,
     dispatch: dispatch,

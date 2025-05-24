@@ -10,6 +10,8 @@ require('dotenv').config();
 const port = process.env.PORT || 8081;
 configReqBody(app);
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/api-menu', apiMenu);
 app.use('/api-users', apiUsers);
 app.use('/api/auth', apiAuth);

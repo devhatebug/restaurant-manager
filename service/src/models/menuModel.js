@@ -5,7 +5,7 @@ const Menu = connection.define('menu', {
   id: {type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
   codeItem: {type: DataTypes.STRING, allowNull: false},
   nameItem: {type: DataTypes.STRING, allowNull: false},
-  imgItem: {type: DataTypes.BLOB("long")},
+  imgItem: {type: DataTypes.STRING},
   classify: {type: DataTypes.STRING,allowNull: false},
   endow: {type: DataTypes.INTEGER},
   isNew: {type: DataTypes.BOOLEAN},

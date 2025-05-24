@@ -9,91 +9,107 @@ const FormAddProduct = ({
   setIsSuccess,
 }) => {
   // state kiểm tra lỗi
-  const [isEmpty, setIsEmpty] = useState(false);
+ const [isEmpty, setIsEmpty] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // state data
-  const [code, setCode] = useState();
-  const [name, setName] = useState();
-  const [img, setImg] = useState();
+  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [imgFile, setImgFile] = useState(null);
   const [classify, setClassify] = useState("main meal");
-  const [endow, setEndow] = useState();
-  const [isNew, setIsNew] = useState(0);
-  const [isHot, setIsHot] = useState(0);
-  const [isSeller, setIsSeller] = useState(0);
-  const feedback = [];
-  const [status, setStatus] = useState(0);
-  const [price, setPrice] = useState();
-  const [base64Img, setBase64Img] = useState();
-  // state hiển thị ảnh
-  const [isImg, setIsImg] = useState(false);
+  const [endow, setEndow] = useState("");
+  const [isNew, setIsNew] = useState("0");
+  const [isHot, setIsHot] = useState("0");
+  const [isSeller, setIsSeller] = useState("0");
+  const [status, setStatus] = useState("0");
+  const [price, setPrice] = useState("");
+  const [previewImg, setPreviewImg] = useState("");
+  // state hiển thị cảnh báo
   const [isWarning, setIsWarning] = useState(false);
-  // hàm chuyển ảnh sang base64
-  const handleChangeFileImg = async (e) => {
-    fileToBase64(e.target.files[0], setBase64Img);
-    setImg(e.target.files[0]);
-    if (e.target.files[0] !== undefined) {
-      setIsImg(true);
+
+  // hàm xử lý ảnh
+  const handleChangeFileImg = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Kiểm tra kích thước file
+      if (file.size > 2 * 1024 * 1024) {
+        setIsWarning(true);
+        return;
+      }
+
+      setIsWarning(false);
+      setImgFile(file);
+
+      // Tạo preview ảnh
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImg(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
   // hàm huỷ ảnh vừa chọn
   const handleCancelFile = () => {
-    setIsImg(false);
-    setBase64Img("");
-    setImg(undefined);
+    setImgFile(null);
+    setPreviewImg("");
   };
-  // data sản phẩm mới
-  const dataNewProfuct = {
-    code: code,
-    name: name,
-    img: base64Img,
-    classify: classify,
-    endow: endow,
-    isnew: isNew,
-    ishot: isHot,
-    isseller: isSeller,
-    feedback: feedback,
-    status: status,
-    price: price,
-  };
+
   // hàm thêm mới sản phẩm
   const addNewProduct = async () => {
-    const isValid = [
-      code,
-      name,
-      img,
-      classify,
-      endow,
-      isHot,
-      isNew,
-      isSeller,
-      feedback,
-      status,
-      price,
-    ].every((value) => value !== null && value !== undefined && value !== "");
-    const maxSizeImg = 2 * 1024 * 1024;
-    if (img && img.size > maxSizeImg) {
-      setIsWarning(true);
-    }
-    if (isValid && isEmpty === false && img.size <= maxSizeImg) {
-      try {
-        await axios.post(
-          "http://127.0.0.1:8080/api-menu/add-menu",
-          dataNewProfuct
-        );
-        setMiddleCheck(1);
-        setIsSuccess(true);
-        setTimeout(() => {
-          setIsSuccess(false);
-        }, 3000);
-        onClose();
-      } catch (err) {
-        console.error(err);
-        setIsErr(true);
-        setTimeout(() => {
-          setIsErr(false);
-        }, 3000);
-      }
-    } else {
+    // Kiểm tra các trường bắt buộc
+    if (!code || !name || !price || !imgFile) {
       setIsEmpty(true);
+      return;
+    }
+
+    // Kiểm tra kích thước ảnh
+    if (imgFile.size > 2 * 1024 * 1024) {
+      setIsWarning(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setIsEmpty(false);
+    setIsWarning(false);
+
+    try {
+      const formData = new FormData();
+      formData.append('code', code);
+      formData.append('name', name);
+      formData.append('file', imgFile);
+      formData.append('classify', classify);
+      formData.append('endow', endow || "0");
+      formData.append('isnew', isNew);
+      formData.append('ishot', isHot);
+      formData.append('isseller', isSeller);
+      formData.append('feedback', JSON.stringify([]));
+      formData.append('status', status);
+      formData.append('price', price);
+
+      await axios.post(
+        "http://127.0.0.1:8080/api-menu/add-menu",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      setMiddleCheck(1);
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+      }, 3000);
+    } catch (err) {
+      console.error("Add product error:", err);
+      setIsErr(true);
+      setTimeout(() => {
+        setIsErr(false);
+      }, 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -222,15 +238,11 @@ const FormAddProduct = ({
         </button>
         <div className="bg-white">
           <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-            <h2 className="mb-4 text-xl font-bold text-gray-900">
-              Thêm sản phẩm mới
-            </h2>
+            <h2 className="mb-4 text-xl font-bold text-gray-900">Thêm sản phẩm mới</h2>
+
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">
                   Tên sản phẩm
                 </label>
                 <input
@@ -240,7 +252,7 @@ const FormAddProduct = ({
                   id="name"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Nhập tên sản phẩm"
-                  required=""
+                  required
                 />
               </div>
               <div className="w-full">
@@ -385,8 +397,8 @@ const FormAddProduct = ({
                   required=""
                 />
               </div>
-              <div className="sm:col-span-2">
-                {!isImg && (
+             <div className="sm:col-span-2">
+                {!previewImg ? (
                   <div className="flex items-center justify-center w-full">
                     <label
                       htmlFor="img-file"
@@ -409,40 +421,54 @@ const FormAddProduct = ({
                           />
                         </svg>
                         <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
+                          <span className="font-semibold">Click to upload</span> or drag and drop
                         </p>
-                        <p className="text-xs text-gray-500">
-                          SVG, PNG, JPG or GIF
-                        </p>
+                        <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 2MB)</p>
                       </div>
                       <input
                         onChange={handleChangeFileImg}
                         id="img-file"
                         type="file"
                         className="hidden"
+                        accept="image/*"
                       />
                     </label>
                   </div>
-                )}
-                {isImg && (
+                ) : (
                   <div className="relative w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer p-[5px]">
                     <button
                       onClick={handleCancelFile}
-                      className="absolute bg-rose-600 p-[10px] rounded-lg top-[10px] left-[10px] text-white font-medium "
+                      className="absolute bg-rose-600 p-[10px] rounded-lg top-[10px] left-[10px] text-white font-medium z-10"
                     >
                       Thay đổi
                     </button>
-                    <img className="" src={base64Img} alt="" />
+                    <img
+                      className="w-full h-auto max-h-64 object-contain"
+                      src={previewImg}
+                      alt="Product preview"
+                    />
                   </div>
                 )}
               </div>
             </div>
+
+            {/* Nút thêm sản phẩm */}
             <button
               onClick={addNewProduct}
-              className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm text-white font-medium text-center bg-[#0369A1] rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
+              disabled={isLoading}
+              className={`inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm text-white font-medium text-center bg-[#0369A1] rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800 ${
+                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Thêm sản phẩm
+              {isLoading ? (
+                <>
+                  <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                  </svg>
+                  Đang thêm...
+                </>
+              ) : 'Thêm sản phẩm'}
             </button>
           </div>
         </div>

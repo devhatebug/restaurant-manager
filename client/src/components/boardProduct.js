@@ -126,7 +126,7 @@ const BoardProducts = () => {
                     <button className="relative h-48 overflow-hidden">
                       <img
                         className="p-8 rounded-t-lg w-full h-full object-contain"
-                        src={blobtoBase64(dt.imgItem)}
+                        src={dt.imgItem}
                         alt="product image"
                       />
                       {dt.statusItem === false && (
@@ -217,7 +217,7 @@ const BoardProducts = () => {
                     <button className="relative h-48 overflow-hidden">
                       <img
                         className="p-8 rounded-t-lg w-full h-full object-contain"
-                        src={blobtoBase64(dt.imgItem)}
+                        src={dt.imgItem}
                         alt="product image"
                       />
                       {dt.statusItem === false && (
@@ -308,7 +308,7 @@ const BoardProducts = () => {
                     <button className="relative h-48 overflow-hidden">
                       <img
                         className="p-8 rounded-t-lg w-full h-full object-contain"
-                        src={blobtoBase64(dt.imgItem)}
+                        src={dt.imgItem}
                         alt="product image"
                       />
                       {dt.statusItem === false && (

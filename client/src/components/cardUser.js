@@ -119,7 +119,7 @@ const CardUser = () => {
       >
         <Meta
           avatar={
-            <Avatar size="50%" src={user ? blobtoBase64(user.avtUser) : ""} />
+            <Avatar size="50%" src={user ? user.avtUser : "https://avatars.githubusercontent.com/u/739984?v=4"} />
           }
           title={user ? user.nameUser : "Name user"}
           description={dataUser()}

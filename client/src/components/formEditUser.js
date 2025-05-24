@@ -13,55 +13,78 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
     const [dataAddress, setDataAddress] = useState('');
     const [dataPhone, setDataPhone] = useState('');
     const [dataImg, setDataImg] = useState(null);
-    const [base64Img, setBase64Img] = useState();
+    const [previewImg, setPreviewImg] = useState();
     const [dataCodeUser, setDataCodeUser] = useState('abc');
-    const [urlImg, setUrlImg] = useState();
     const [isWarning, setIsWarning] = useState(false);
     const [isImg, setIsImg] = useState(false);
-    const formData = {
-        codeUser: dataCodeUser,
-        name: dataName === "" ? data.nameUser : dataName,
-        avt: base64Img === null ? data.avtUser.data : base64Img,
-        username: dataUserName === "" ? data.username : dataUserName,
-        pass: dataPass === "" ? data.pass : dataPass,
-        address: dataAddress === "" ? data.address : dataAddress,
-        phone: dataPhone === "" ? data.phone : dataPhone,
-        role: dataRole === "" ? data.roleUser : dataRole,
-        idUser: data.id,
-        cart: data.cart
-    };
-    if(dataImg) { 
-        fileToBase64(dataImg, setUrlImg)
-    }
 
-    const handleUploadFile = async(e) => {
-        fileToBase64(e.target.files[0], setBase64Img)
-        setDataImg(e.target.files[0])
+    useEffect(() => {
+        if (dataImg) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImg(reader.result);
+            };
+            reader.readAsDataURL(dataImg);
+        }
+    }, [dataImg]);
+
+    const handleUploadFile = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setDataImg(file);
+        }
     }
 
     const handleUpdateUser = async () => {
-        const checkValue = listUsers.find((user) => user.username === dataUserName);
-        const maxSizeImg = 2*1024*1024;
-        if (checkValue !== undefined) {
-            setIsWarning(true)
-        } 
-        if(dataImg?.size > maxSizeImg) {
-            setIsImg(true);
-        }
-        else {
-            try {
-                const res = await axios.put('http://127.0.0.1:8080/api-users/update-user', formData);
-                handleCheckData(1);
-                userUpdate(1);
-                setIsReload(1)
-                handleUpdate(true);
-                onClose();
-            } catch (err) {
-                handleErr(true);
-                console.log(err);
+    const checkValue = listUsers.find((user) => user.username === dataUserName);
+    const maxSizeImg = 2 * 1024 * 1024;
+
+    if (checkValue !== undefined) {
+        setIsWarning(true);
+        return;
+    }
+
+    if (dataImg?.size > maxSizeImg) {
+        setIsImg(true);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('idUser', data.id);
+  formData.append('codeUser', dataCodeUser);
+  formData.append('name', dataName || data.nameUser);
+  formData.append('username', dataUserName || data.username);
+  formData.append('pass', dataPass || data.pass);
+  formData.append('address', dataAddress || data.address);
+  formData.append('phone', dataPhone || data.phone);
+  formData.append('role', dataRole || data.roleUser);
+  formData.append('cart', JSON.stringify(data.cart));
+  formData.append('currentAvt', data.avtUser);
+
+  if (dataImg) {
+    formData.append('file', dataImg);
+  }
+
+    try {
+        const res = await axios.put(
+            'http://127.0.0.1:8080/api-users/update-user',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
             }
-        }
-    };
+        );
+        handleCheckData(1);
+        userUpdate(1);
+        setIsReload(1);
+        handleUpdate(true);
+        onClose();
+    } catch (err) {
+        handleErr(true);
+        console.log(err);
+    }
+};
 
     return (
       <div>
@@ -107,20 +130,20 @@ const FormEditUser = ({ onClose, dataUser,handleUpdate, handleCheckData, handleE
           </div>
         )}
         <div className="flex items-center py-6">
-          <div className="w-12 h-12 mr-4 flex-none rounded-xl border overflow-hidden">
-            <img
-              className="w-12 h-12 mr-4 object-cover"
-              src={urlImg == null ? blobtoBase64(data.avtUser) : urlImg}
-              alt="Avatar Upload"
-            />
-          </div>
-          <label className="cursor-pointer ">
-            <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">
-              Browse
-            </span>
-            <input onChange={handleUploadFile} type="file" className="hidden" />
-          </label>
-        </div>
+                <div className="w-12 h-12 mr-4 flex-none rounded-xl border overflow-hidden">
+                    <img
+                        className="w-12 h-12 mr-4 object-cover"
+                        src={previewImg || data.avtUser}
+                        alt="Avatar Upload"
+                    />
+                </div>
+                <label className="cursor-pointer ">
+                    <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">
+                        Browse
+                    </span>
+                    <input onChange={handleUploadFile} type="file" className="hidden" />
+                </label>
+            </div>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>
             <label

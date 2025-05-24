@@ -32,7 +32,7 @@ const CartPage = () => {
       setEndow(endow);
     }
   }, [cart])
-  
+
   useEffect(() => {
     if (isLogIn) {
       setUserId(userId);
@@ -149,7 +149,7 @@ const CartPage = () => {
                   className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
                 >
                   <img
-                    src={blobtoBase64(dt.imgItem)}
+                    src={dt.imgItem}
                     alt="product-image"
                     className="w-full rounded-lg sm:w-40"
                   />

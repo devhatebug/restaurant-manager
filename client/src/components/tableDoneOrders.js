@@ -155,7 +155,7 @@ const TableDoneOrder = () => {
             <Image
               className="rounded-lg"
               width={300}
-              src={orderSelect ? blobtoBase64(orderSelect.img) : ""}
+              src={orderSelect ? orderSelect.img : ""}
             />
           </div>
           <div className="mt-[20px] text-lg">

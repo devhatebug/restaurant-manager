@@ -1,91 +1,131 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { fileToBase64 } from "@/utils/toBase64";
 import getAllUsers from "@/utils/getAllUser";
 import { useRouter } from "next/navigation";
+
 const SignUpPage = () => {
   const router = useRouter();
   const [dataUsers, setDataUsers] = useState([]);
-  const [code, setCode] = useState('abcsss');
-  const [img, setImg] = useState();
-  const [file, setFile] = useState();
-  const [name, setName] = useState();
-  const [username, setUsername] = useState();
-  const [phone, setPhone] = useState();
-  const [pass, setPass] = useState();
-  const [address, setAddress] = useState();
+  const [code, setCode] = useState("abcsss");
+  const [img, setImg] = useState(null); // Lưu data URL cho preview
+  const [file, setFile] = useState(null); // Lưu file ảnh để gửi lên server
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [pass, setPass] = useState("");
+  const [address, setAddress] = useState("");
   const role = "user";
   const [isReady, setIsReady] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
-  const [notiDupicate, setNotiDuplicate] = useState(false);
+  const [notiDuplicate, setNotiDuplicate] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Đóng popup thành công
   const closePopup = () => {
     setIsSuccess(false);
   };
+
+  // Xử lý chọn file ảnh
   const handleFileImg = (e) => {
-    fileToBase64(e.target.files[0], setImg);
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      // Kiểm tra kích thước file
+      if (selectedFile.size > 2 * 1024 * 1024) {
+        setIsWarning(true);
+        return;
+      }
+
+      setIsWarning(false);
+      setFile(selectedFile);
+
+      // Tạo preview ảnh
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImg(reader.result); // Lưu data URL cho preview
+      };
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
   };
-  const newData = {
-    codeUser: code,
-    name: name,
-    avt: img,
-    username: username,
-    pass: pass,
-    address: address,
-    phone: phone,
-    role: role,
-  };
+
+  // Lấy danh sách người dùng
   useEffect(() => {
     const getUser = async () => {
       try {
-        const dataUsers = await getAllUsers();
-        setDataUsers(dataUsers);
+        const users = await getAllUsers();
+        setDataUsers(users);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
-
     getUser();
   }, []);
+
+  // Kiểm tra trùng lặp username
   useEffect(() => {
-    const foundUser = dataUsers.find((users) => users.username === username);
-    if (foundUser !== undefined && username !== "") {
-      setNotiDuplicate(true);
+    if (username) {
+      const foundUser = dataUsers.find((user) => user.username === username);
+      setNotiDuplicate(!!foundUser);
     } else {
       setNotiDuplicate(false);
     }
-  });
+  }, [username, dataUsers]);
+
+  // Đăng ký người dùng
   const registerUser = async () => {
-    const isValid = [
-      img,
-      code,
-      name,
-      role,
-      username,
-      pass,
-      address,
-      phone,
-    ].every((value) => value !== null && value !== undefined && value !== "");
-    const maxSizeImg = 2 * 1024 * 1024;
-    if (file && file.size > maxSizeImg) {
-      setIsWarning(true);
+    const isValid = [code, name, username, pass, address, phone].every(
+      (value) => value !== null && value !== undefined && value !== ""
+    );
+
+    if (!isValid) {
+      setIsReady(true);
+      return;
     }
-    if (isValid && notiDupicate === false && file.size <= maxSizeImg) {
-      try {
-        await axios.post("http://127.0.0.1:8080/api-users/add-users", newData);
-        setIsReady(false);
-        setIsWarning(false);
-        setIsSuccess(true);
-      } catch (err) {
-        console.log(err);
-        setIsSuccess(false);
+
+    if (notiDuplicate) {
+      return;
+    }
+
+    if (file && file.size > 2 * 1024 * 1024) {
+      setIsWarning(true);
+      return;
+    }
+
+    try {
+        setIsLoading(true)
+      const formData = new FormData();
+      formData.append("codeUser", code);
+      formData.append("name", name);
+      formData.append("username", username);
+      formData.append("pass", pass);
+      formData.append("address", address);
+      formData.append("phone", phone);
+      formData.append("role", role);
+      if (file) {
+        formData.append("file", file); // Gửi file ảnh
       }
-    } else {
+
+      await axios.post("http://127.0.0.1:8080/api-users/add-users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setIsReady(false);
+      setIsWarning(false);
+      setIsSuccess(true);
+    } catch (err) {
+      console.error("Error registering user:", err);
+      setIsSuccess(false);
       setIsReady(true);
     }
+    setIsLoading(false)
   };
+
   return (
     <>
       {isSuccess && (
@@ -122,7 +162,7 @@ const SignUpPage = () => {
               <div className="p-4 md:p-5 text-center">
                 <svg
                   viewBox="0 -398 1820 1820"
-                  className="icon mx-auto text-gray-400 w-[200px] h-200px]"
+                  className="icon mx-auto text-gray-400 w-[200px] h-[200px]"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
@@ -198,11 +238,11 @@ const SignUpPage = () => {
                 <span className="sr-only">Info</span>
                 <div>
                   <span className="font-medium">Cảnh báo lỗi!</span> Kích thước
-                  ảnh không vượt quá 2mb
+                  ảnh không vượt quá 2MB
                 </div>
               </div>
             )}
-            {notiDupicate && (
+            {notiDuplicate && (
               <div
                 className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
                 role="alert"
@@ -239,122 +279,173 @@ const SignUpPage = () => {
                 </svg>
                 <span className="sr-only">Info</span>
                 <div>
-                  <span className="font-medium">Cảnh báo lỗi!</span> Kông mục
+                  <span className="font-medium">Cảnh báo lỗi!</span> Không mục
                   nào được để trống
                 </div>
               </div>
             )}
-            <div>
+            <div className="mb-6">
               <label
-                className="block text-sm font-medium leading-5  text-gray-700 mb-1"
+                className="block text-sm font-medium leading-5 text-gray-700 mb-1"
                 htmlFor="avt-user"
               >
                 Ảnh đại diện
               </label>
-              <input
-                className="block w-full mb-5 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                id="avt-user"
-                type="file"
-                onChange={handleFileImg}
-              ></input>
+              {img ? (
+                <div className="relative w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer p-[5px]">
+                  <button
+                    onClick={() => {
+                      setImg(null);
+                      setFile(null);
+                    }}
+                    className="absolute bg-rose-600 p-[10px] rounded-lg top-[10px] left-[10px] text-white font-medium z-10"
+                  >
+                    Thay đổi
+                  </button>
+                  <img
+                    className="w-full h-auto max-h-64 object-contain"
+                    src={img}
+                    alt="Avatar preview"
+                    onError={(e) => console.error("Error loading image:", e)}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center w-full">
+                  <label
+                    htmlFor="avt-user"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload</span> or
+                        drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        SVG, PNG, JPG or GIF (MAX. 2MB)
+                      </p>
+                    </div>
+                    <input
+                      id="avt-user"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileImg}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
             <div>
-              <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-5 text-gray-700 mb-1"
+              >
+                Tên hiển thị
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <input
+                  id="name"
+                  onChange={(e) => setName(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex items-center">
+              <div className="mr-2">
                 <label
-                  htmlFor="name"
-                  className="block text-sm font-medium leading-5  text-gray-700 mb-1"
+                  htmlFor="username"
+                  className="block text-sm font-medium leading-5 text-gray-700 mb-1"
                 >
-                  Tên hiển thị
+                  Tên đăng nhập
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <input
-                    id="name"
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="@username"
+                    id="username"
+                    onChange={(e) => setUsername(e.target.value)}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
-              <div className="mt-6 flex items-center">
-                <div className="mr-2">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium leading-5  text-gray-700 mb-1"
-                  >
-                    Tên đăng nhập
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
-                    <input
-                      placeholder="@username"
-                      id="username"
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                    />
-                  </div>
-                </div>
-                <div className="ml-2">
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium leading-5  text-gray-700 mb-1"
-                  >
-                    Số điện thoại
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
-                    <input
-                      placeholder="0123456789"
-                      id="phone"
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
+              <div className="ml-2">
                 <label
-                  htmlFor="password"
+                  htmlFor="phone"
                   className="block text-sm font-medium leading-5 text-gray-700 mb-1"
                 >
-                  Mật khẩu
+                  Số điện thoại
                 </label>
-                <div className="mt-1 rounded-md shadow-sm">
+                <div className="mt-1 relative rounded-md shadow-sm">
                   <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required=""
-                    onChange={(e) => setPass(e.target.value)}
+                    placeholder="0123456789"
+                    id="phone"
+                    onChange={(e) => setPhone(e.target.value)}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
-              <div className="mt-6">
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium leading-5 text-gray-700 mb-1"
+            </div>
+            <div className="mt-6">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-5 text-gray-700 mb-1"
+              >
+                Mật khẩu
+              </label>
+              <div className="mt-1 rounded-md shadow-sm">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required=""
+                  onChange={(e) => setPass(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                />
+              </div>
+            </div>
+            <div className="mt-6">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium leading-5 text-gray-700 mb-1"
+              >
+                Địa chỉ
+              </label>
+              <div className="mt-1 rounded-md shadow-sm">
+                <input
+                  type="text"
+                  id="address"
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="VD: Ngõ 1, Đường 2, Phố 3, Huyện 4, Tỉnh 5"
+                  required=""
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                />
+              </div>
+            </div>
+            <div className="mt-6">
+              <span className="block w-full rounded-md shadow-sm">
+                <button
+                  onClick={registerUser}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                 >
-                  Địa chỉ
-                </label>
-                <div className="mt-1 rounded-md shadow-sm">
-                  <input
-                    type="text"
-                    id="address"
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="VD: Ngõ 1, Đường 2, Phố 3, Huyện 4, Tỉnh 5"
-                    required=""
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <span className="block w-full rounded-md shadow-sm">
-                  <button
-                    onClick={registerUser}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-                  >
-                    Đăng kí
-                  </button>
-                </span>
-              </div>
+                  {
+                    isLoading ? 'Đang xử lý...' : 'Đăng ký'
+                  }
+                </button>
+              </span>
             </div>
           </div>
         </div>

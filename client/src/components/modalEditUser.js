@@ -1,91 +1,125 @@
 import React, { useEffect, useState } from "react";
 import { Modal, message } from "antd";
-import { blobtoBase64, fileToBase64 } from "@/utils/toBase64";
 import axios from "axios";
+
 const ModalEditUser = ({ user, openModal, setOpenModal, users, setReload }) => {
-  const [img, setImg] = useState();
-  const [sizeImg, setSizeImg] = useState();
+  const [imgFile, setImgFile] = useState(null);
+  const [previewImg, setPreviewImg] = useState("");
   const [dataName, setDataName] = useState("");
   const [dataUserName, setDataUserName] = useState("");
   const [dataPass, setDataPass] = useState("");
   const [dataAddress, setDataAddress] = useState("");
   const [dataPhone, setDataPhone] = useState("");
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
   const [messageApi, contextHolder] = message.useMessage();
-   const successUpdate = () => {
-     messageApi.open({
-       type: "success",
-       content: "Chỉnh sửa thành công!",
-     });
-   };
-   const error = () => {
-     messageApi.open({
-       type: "error",
-       content: "Có lỗi không mong muốn!",
-     });
-   };
+
+  // Các hàm hiển thị message
+  const successUpdate = () => {
+    messageApi.open({
+      type: "success",
+      content: "Chỉnh sửa thành công!",
+    });
+  };
+
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Có lỗi không mong muốn!",
+    });
+  };
+
   const warningSize = () => {
     messageApi.open({
       type: "warning",
       content: "Kích thước ảnh không vượt quá 2Mb",
     });
   };
+
   const warningUserName = () => {
     messageApi.open({
       type: "warning",
       content: "Tên đăng nhập này đã tồn tại",
     });
   };
+
+  // Xử lý upload ảnh
   const uploadImg = (e) => {
-    fileToBase64(e.target.files[0], setImg);
-    setSizeImg(e.target.files[0]?.size);
+    const file = e.target.files[0];
+    if (file) {
+      setImgFile(file);
+
+      // Tạo preview ảnh
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImg(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
-  const handleOk = async() => {
-    setModalText("The modal will be closed after two seconds");
+
+  // Xử lý cập nhật thông tin
+  const handleOk = async () => {
     setConfirmLoading(true);
-    const dataNew = {
-      codeUser: user.codeUser,
-      name: dataName === "" ? user.nameUser : dataName,
-      avt: img === undefined ? user.avtUser.data : img,
-      username: dataUserName === "" ? user.username : dataUserName,
-      pass: dataPass === "" ? user.pass : dataPass,
-      address: dataAddress === "" ? user.address : dataAddress,
-      phone: dataPhone === "" ? user.phone : dataPhone,
-      role: user.roleUser,
-      idUser: user.id,
-      cart: user.cart,
-    };
+
+    // Kiểm tra kích thước ảnh
     const maxSizeImg = 2 * 1024 * 1024;
-    if(img && sizeImg > maxSizeImg) {
+    if (imgFile && imgFile.size > maxSizeImg) {
       setConfirmLoading(false);
       warningSize();
+      return;
     }
-    const checkUserName = users.find(el => el.username === dataUserName);
-    if(checkUserName) {
+
+    // Kiểm tra username trùng
+    const checkUserName = users.find(el => el.username === dataUserName && el.id !== user.id);
+    if (checkUserName) {
       setConfirmLoading(false);
       warningUserName();
+      return;
     }
-    else {
-      try {
-        await axios.put("http://127.0.0.1:8080/api-users/update-user", dataNew);
-        setConfirmLoading(false);
-        setOpenModal(false);
-        successUpdate();
-        setReload(1);
-      } catch (err) {
-        error();
-        console.log(err);
-        setConfirmLoading(false);
+
+    try {
+      // Tạo FormData
+      const formData = new FormData();
+      formData.append('idUser', user.id);
+      formData.append('codeUser', user.codeUser);
+      formData.append('name', dataName || user.nameUser);
+      formData.append('username', dataUserName || user.username);
+      formData.append('pass', dataPass || user.pass);
+      formData.append('address', dataAddress || user.address);
+      formData.append('phone', dataPhone || user.phone);
+      formData.append('role', user.roleUser);
+      formData.append('cart', JSON.stringify(user.cart));
+      formData.append('currentAvt', user.avtUser);
+
+      if (imgFile) {
+        formData.append('file', imgFile);
       }
+
+      // Gửi request
+      await axios.put("http://127.0.0.1:8080/api-users/update-user", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setConfirmLoading(false);
+      setOpenModal(false);
+      successUpdate();
+      setReload(prev => prev + 1);
+    } catch (err) {
+      console.error("Lỗi khi cập nhật:", err);
+      error();
+      setConfirmLoading(false);
     }
   };
+
   const handleCancel = () => {
     setOpenModal(false);
   };
+
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Modal
         title="Chỉnh sửa thông tin"
         open={openModal}
@@ -99,15 +133,20 @@ const ModalEditUser = ({ user, openModal, setOpenModal, users, setReload }) => {
           <div className="w-12 h-12 mr-4 flex-none rounded-xl border overflow-hidden">
             <img
               className="w-12 h-12 mr-4 object-cover"
-              src={img === undefined ? blobtoBase64(user.avtUser) : img}
+              src={previewImg || user.avtUser}
               alt="Avatar Upload"
             />
           </div>
-          <label className="cursor-pointer ">
+          <label className="cursor-pointer">
             <span className="focus:outline-none text-white text-sm py-2 px-4 rounded-full bg-green-400 hover:bg-green-500 hover:shadow-lg">
               Browse
             </span>
-            <input onChange={uploadImg} type="file" className="hidden" />
+            <input
+              onChange={uploadImg}
+              type="file"
+              accept="image/*"
+              className="hidden"
+            />
           </label>
         </div>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
@@ -197,4 +236,5 @@ const ModalEditUser = ({ user, openModal, setOpenModal, users, setReload }) => {
     </>
   );
 };
+
 export default ModalEditUser;

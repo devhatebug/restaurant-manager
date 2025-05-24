@@ -92,7 +92,7 @@ const ProductsPage = () => {
     const idAdd = e.target.value;
     addToCart(idAdd);
   };
-  
+
   return (
     <>
       <div>
@@ -190,7 +190,7 @@ const ProductsPage = () => {
                   <button className="relative">
                     <img
                       className="p-8 rounded-t-lg w-full"
-                      src={blobtoBase64(dt.imgItem)}
+                      src={dt.imgItem}
                       alt="product image"
                     />
                     {dt.statusItem === false && (

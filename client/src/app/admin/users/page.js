@@ -88,7 +88,7 @@ const Users = () => {
                     <h4 className="font-semibold sm:text-2xl text-base">Danh sách người dùng</h4>
                 </div>
                 <div className="search-box">
-                    <div className="flex items-center max-w-sm mx-auto">   
+                    <div className="flex items-center max-w-sm mx-auto">
                         <label htmlFor="simple-search" className="sr-only">Search</label>
                         <div className="relative w-full">
                             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -108,17 +108,17 @@ const Users = () => {
                 </div>
             </div>
             <div className="table-users mb-[30px]">
-                <TableUsers 
-                    handleChangeData={setIsChangeData} 
+                <TableUsers
+                    handleChangeData={setIsChangeData}
                     checkData={checkData} setCheckData={setCheckData}
-                    userUpdate={userUpdate} setUserUpdate={setUserUpdate} 
+                    userUpdate={userUpdate} setUserUpdate={setUserUpdate}
                     isReload={isReload} setIsReload={setIsReload}
                     isUpdate={isUpdate} setIsUpdate={setIsUpdate}
                     removeUser={removeUser}
                 />
             </div>
 
-        {isCard && 
+        {isCard &&
         <>
             <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px]">
                 <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
@@ -126,15 +126,15 @@ const Users = () => {
                         <svg className="w-[30px] h-[30px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier"> 
-                            <path opacity="0.5" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="#7B7B7B "></path> 
-                            <path d="M8.96967 8.96967C9.26256 8.67678 9.73744 8.67678 10.0303 8.96967L12 10.9394L13.9697 8.96969C14.2626 8.6768 14.7374 8.6768 15.0303 8.96969C15.3232 9.26258 15.3232 9.73746 15.0303 10.0304L13.0607 12L15.0303 13.9696C15.3232 14.2625 15.3232 14.7374 15.0303 15.0303C14.7374 15.3232 14.2625 15.3232 13.9696 15.0303L12 13.0607L10.0304 15.0303C9.73746 15.3232 9.26258 15.3232 8.96969 15.0303C8.6768 14.7374 8.6768 14.2626 8.96969 13.9697L10.9394 12L8.96967 10.0303C8.67678 9.73744 8.67678 9.26256 8.96967 8.96967Z" fill="#7B7B7B "></path> 
+                            <g id="SVGRepo_iconCarrier">
+                            <path opacity="0.5" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="#7B7B7B "></path>
+                            <path d="M8.96967 8.96967C9.26256 8.67678 9.73744 8.67678 10.0303 8.96967L12 10.9394L13.9697 8.96969C14.2626 8.6768 14.7374 8.6768 15.0303 8.96969C15.3232 9.26258 15.3232 9.73746 15.0303 10.0304L13.0607 12L15.0303 13.9696C15.3232 14.2625 15.3232 14.7374 15.0303 15.0303C14.7374 15.3232 14.2625 15.3232 13.9696 15.0303L12 13.0607L10.0304 15.0303C9.73746 15.3232 9.26258 15.3232 8.96969 15.0303C8.6768 14.7374 8.6768 14.2626 8.96969 13.9697L10.9394 12L8.96967 10.0303C8.67678 9.73744 8.67678 9.26256 8.96967 8.96967Z" fill="#7B7B7B "></path>
                             </g>
                             </svg>
                     </button>
-                    {userSearched != null ? 
+                    {userSearched != null ?
                     <div className="animate-openingPopup flex flex-col items-center pb-10 z-10">
-                        <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src={blobtoBase64(userSearched.avtUser)} alt="User Avatar"/>
+                        <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src={userSearched.avtUser} alt="User Avatar"/>
                         <h5 className="mb-1 text-xl font-semibold text-gray-900 uppercase">{userSearched.nameUser}</h5>
                         <span className="text-sm text-gray-500"><strong>Code user: </strong>{userSearched.codeUser}</span>
                         <span className="text-sm text-gray-500"><strong>Username: </strong>{userSearched.username}</span>
@@ -153,11 +153,11 @@ const Users = () => {
                     </div>
                     }
                 </div>
-                
+
             </div>
             </>
             }
-            {isAlertSearch && 
+            {isAlertSearch &&
                 <div className="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 absolute bottom-0 right-0" role="alert">
                     <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -168,14 +168,14 @@ const Users = () => {
                     </div>
                 </div>
             }
-            {isEditFormOpen && 
+            {isEditFormOpen &&
                 <div className="fixed inset-0 flex items-center justify-center ml-0 sm:ml-[260px]">
                     <div className="animate-openingPopup w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg px-[20px] py-[10px]">
-                        <FormEditUser 
-                            dataUser={[selectedUser]} 
-                            onClose={handleCloseEditForm} 
-                            listUsers={dataUsers} 
-                            handleErr={setIsErr} 
+                        <FormEditUser
+                            dataUser={[selectedUser]}
+                            onClose={handleCloseEditForm}
+                            listUsers={dataUsers}
+                            handleErr={setIsErr}
                             handleCheckData={setCheckData}
                             userUpdate={setUserUpdate}
                             setIsReload={setIsReload}
@@ -184,7 +184,7 @@ const Users = () => {
                     </div>
                 </div>
             }
-            {isErr && 
+            {isErr &&
                 <div onClick={() => setIsErr(false)} className="cursor-pointer animate-slideInBottom bg-red-500 border-t-4 border-red-900 rounded-lg text-white px-4 py-3 shadow-md absolute right-0 bottom-0" role="alert">
                     <div className="flex">
                         <div className="py-1"><svg className="fill-current h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>

@@ -4,7 +4,7 @@ CREATE TABLE menu (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   codeItem VARCHAR(255) NOT NULL,
   nameItem VARCHAR(255) NOT NULL,
-  imgItem LONGBLOB,
+  imgItem VARCHAR(255) NOT NULL,
   classify VARCHAR(255) NOT NULL,
   endow INT,
   isNew BOOLEAN,
@@ -17,7 +17,7 @@ CREATE TABLE menu (
 CREATE TABLE orders (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nameOrder VARCHAR(255),
-  img LONGBLOB,
+  img VARCHAR(255),
   price INT,
   statusOrder VARCHAR(255),
   dispatch VARCHAR(255),
@@ -30,7 +30,7 @@ CREATE TABLE users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   codeUser VARCHAR(255) NOT NULL,
   nameUser VARCHAR(255) NOT NULL,
-  avtUser LONGBLOB,
+  avtUser VARCHAR(255),
   username VARCHAR(255) NOT NULL,
   pass VARCHAR(255) NOT NULL,
   address VARCHAR(255) NOT NULL,
@@ -41,4 +41,4 @@ CREATE TABLE users (
 
 # insert admin user
 INSERT INTO users (codeUser, nameUser, avtUser, username, pass, address, phone, roleUser, cart) VALUES
-('AD001', 'Admin', NULL, 'admin', 'admin', '123 Main St', '1234567890', 'admin', NULL);
+('AD001', 'Admin', 'https://github.com/benjamincanac.png', 'admin', 'admin', '123 Main St', '1234567890', 'admin', NULL);
